@@ -6,7 +6,7 @@ NAME=${NAME//[\/\.]/-}
 slack() {
   if [[ -n "$SLACK_HOOK" ]]; then
     local message=$1
-    local username="${SLACK_NAME:-docker-builder}"
+    local username="${SLACK_NAME:-Auto Deploy}"
     local emoji="${SLACK_EMOJI:-:floppy_disk:}"
     local channel=$SLACK_CHANNEL
     curl -X POST \
