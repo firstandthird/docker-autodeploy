@@ -1,0 +1,30 @@
+{
+  "name": "docker-autodeploy",
+  "description": "",
+  "private": true,
+  "homepage": "https://github.com/firstandthird/docker-autodeploy",
+  "author": "First+Third",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/firstandthird/docker-autodeploy.git"
+  },
+  "scripts": {
+    "start": "rapptor",
+    "lint": "eslint . "
+  },
+  "dependencies": {
+    "boom": "4.3.1",
+    "joi": "10.3.1",
+    "rapptor": "1.10.0",
+    "runshell": "0.2.0"
+  },
+  "devDependencies": {
+    "eslint": "3.18.0",
+    "eslint-config-firstandthird": "3.3.0",
+    "eslint-plugin-import": "2.2.0"
+  },
+  "eslintConfig": {
+    "extends": "firstandthird"
+  }
+}

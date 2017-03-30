@@ -1,0 +1,13 @@
+app:
+  build: '.'
+  dockerfile: 'DockerfileDev'
+  volumes:
+    - ".:/home/app/src"
+    - "/var/run/docker.sock:/var/run/docker.sock"
+  environment:
+    VIRTUAL_HOST: 'autodeploy.*'
+    SECRET: 'abc123'
+    SLACK_HOOK:
+    SLACK_CHANNEL:
+    SWARM_MODE:
+

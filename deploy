@@ -1,0 +1,70 @@
+#!/bin/bash
+
+NAME="${GITHUB_REPO}_${GITHUB_BRANCH}"
+NAME=${NAME//[\/\.]/-}
+
+slack() {
+  if [[ -n "$SLACK_HOOK" ]]; then
+    local message=$1
+    local username="${SLACK_NAME:-docker-builder}"
+    local emoji="${SLACK_EMOJI:-:floppy_disk:}"
+    local channel=$SLACK_CHANNEL
+    curl -X POST \
+      --data-urlencode "payload={\"text\": \"$message\", \"username\": \"$username\", \"channel\":\"$channel\",\"icon_emoji\": \"$emoji\"}" \
+      $SLACK_HOOK >> /dev/null 2>&1
+    if [[ "$?" != 0 ]]; then
+      log "!Error sending to slack"
+    fi
+
+  fi
+}
+
+if [[ -n "$SWARM_MODE" ]]; then
+  docker service inspect $NAME > /dev/null 2>&1
+  if [[ "$?" != 0 ]]; then
+    echo "$NAME doesn't exist, creating"
+    docker service create --name $NAME $DOCKER_IMAGE
+  else
+    echo "updating $NAME using $DOCKER_IMAGE"
+    docker service update --image $DOCKER_IMAGE $NAME
+  fi
+
+  if [[ "$?" != 0 ]]; then
+    echo "error running $NAME"
+    slack "error starting $GITHUB_REPO#$GITHUB_BRANCH"
+  else
+    echo "$NAME deployed"
+    HOST="${NAME}.${DOMAIN}"
+    slack "$GITHUB_REPO#$GITHUB_BRANCH deployed to $HOST"
+  fi
+else
+  if [[ -z "$DOMAIN" ]]; then
+    DOMAIN="*"
+  fi
+
+  HOST="${GITHUB_REPO}-${GITHUB_BRANCH}.${DOMAIN}"
+
+  HOST=${HOST//[\/]/-}
+
+  docker inspect $NAME > /dev/null 2>&1
+  if [[ "$?" == 0 ]]; then
+    echo "$NAME exists, removing first"
+    docker stop $NAME
+    docker rm $NAME
+  fi
+
+  docker run -d \
+    --name $NAME \
+    --env VIRTUAL_HOST=$HOST \
+    --env NODE_ENV=$APP_NODE_ENV \
+    $DOCKER_IMAGE
+
+  if [[ "$?" != 0 ]]; then
+    echo "error running $NAME"
+    slack "error starting $GITHUB_REPO#$GITHUB_BRANCH"
+  else
+    echo "$NAME deployed"
+    slack "$GITHUB_REPO#$GITHUB_BRANCH deployed to $HOST"
+  fi
+
+fi
