@@ -13,7 +13,7 @@ exports.hook = {
         user: Joi.string(),
         repo: Joi.string(),
         branch: Joi.string(),
-        image: Joi.string()
+        dockerImage: Joi.string()
       }
     }
   },
