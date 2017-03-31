@@ -41,7 +41,7 @@ slack() {
     local channel=$SLACK_CHANNEL
     curl -X POST \
       --data-urlencode "payload={\"attachments\": [{ \"title\": \"$message\",\"color\":\"$color\" }], \"username\": \"$username\", \"channel\":\"$channel\",\"icon_emoji\": \"$emoji\"}" \
-      $SLACK_HOOK >> /dev/null 2>&1
+      $SLACK_HOOK
     if [[ "$?" != 0 ]]; then
       log "!Error sending to slack"
     fi
