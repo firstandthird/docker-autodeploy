@@ -1,6 +1,7 @@
 secret: '{{ENV.SECRET}}'
 deployScript: '{{CWD}}/deploy'
 plugins:
+  hapi-log-response:
   hapi-method-loader:
     _enabled: false
 

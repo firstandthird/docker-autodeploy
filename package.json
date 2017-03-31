@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "boom": "4.3.1",
+    "hapi-log-response": "1.0.0",
     "joi": "10.3.1",
     "rapptor": "1.10.0",
     "runshell": "0.2.0"
