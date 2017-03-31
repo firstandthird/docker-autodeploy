@@ -6,11 +6,12 @@ NAME=${NAME//[\/\.]/-}
 slack() {
   if [[ -n "$SLACK_HOOK" ]]; then
     local message=$1
+    local color="${2:-good}"
     local username="${SLACK_NAME:-Auto Deploy}"
     local emoji="${SLACK_EMOJI:-:floppy_disk:}"
     local channel=$SLACK_CHANNEL
     curl -X POST \
-      --data-urlencode "payload={\"text\": \"$message\", \"username\": \"$username\", \"channel\":\"$channel\",\"icon_emoji\": \"$emoji\"}" \
+      --data-urlencode "payload={\"attachments\": [{ \"title\": \"$message\",\"color\":\"$color\" }], \"username\": \"$username\", \"channel\":\"$channel\",\"icon_emoji\": \"$emoji\"}" \
       $SLACK_HOOK >> /dev/null 2>&1
     if [[ "$?" != 0 ]]; then
       log "!Error sending to slack"
@@ -31,7 +32,7 @@ if [[ -n "$SWARM_MODE" ]]; then
 
   if [[ "$?" != 0 ]]; then
     echo "error running $NAME"
-    slack "error starting $GITHUB_REPO#$GITHUB_BRANCH"
+    slack "error starting $GITHUB_REPO#$GITHUB_BRANCH" "danger"
   else
     echo "$NAME deployed"
     HOST="${NAME}.${DOMAIN}"
@@ -61,7 +62,7 @@ else
 
   if [[ "$?" != 0 ]]; then
     echo "error running $NAME"
-    slack "error starting $GITHUB_REPO#$GITHUB_BRANCH"
+    slack "error starting $GITHUB_REPO#$GITHUB_BRANCH" "danger"
   else
     echo "$NAME deployed"
     slack "$GITHUB_REPO#$GITHUB_BRANCH deployed to $HOST"
