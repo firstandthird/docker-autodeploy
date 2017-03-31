@@ -11,4 +11,5 @@ app:
     SLACK_CHANNEL:
     SWARM_MODE:
     DOCKER_AUTH:
+    DOCKER_ARGS_HOOK: '/home/app/src/example-args'
 
