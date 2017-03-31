@@ -32,7 +32,7 @@ exports.hook = {
         GITHUB_USER: payload.user,
         GITHUB_REPO: payload.repo,
         GITHUB_BRANCH: payload.branch,
-        DOCKER_IMAGE: payload.image
+        DOCKER_IMAGE: payload.dockerImage
       },
       log: true
     });
