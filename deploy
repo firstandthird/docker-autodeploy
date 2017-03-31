@@ -57,7 +57,7 @@ if [[ -n "$SWARM_MODE" ]]; then
   docker service inspect $NAME > /dev/null 2>&1
   if [[ "$?" != 0 ]]; then
     log "$NAME doesn't exist, creating"
-    docker service create $ARGS --name $NAME $DOCKER_IMAGE
+    docker service create $ARGS --name $NAME --with-registry-auth $DOCKER_IMAGE
   else
     log "updating $NAME using $DOCKER_IMAGE"
     docker service update --image $DOCKER_IMAGE $NAME
