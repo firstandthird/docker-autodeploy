@@ -84,6 +84,18 @@ else
 
   HOST=${HOST//[\/]/-}
 
+  docker pull $DOCKER_IMAGE
+  if [[ "$?" != 0 ]]; then
+    log "first pull failed, trying again"
+    sleep 2
+    docker pull $DOCKER_IMAGE
+    if [[ "$?" != 0 ]]; then
+      log "second pull failed, exiting"
+      slack "Error pulling $DOCKER_IMAGE" "danger"
+      exit 1
+    fi
+  fi
+
   docker inspect $NAME > /dev/null 2>&1
   if [[ "$?" == 0 ]]; then
     log "$NAME exists, removing first"
