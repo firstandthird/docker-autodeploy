@@ -54,6 +54,16 @@ slack() {
   fi
 }
 
+if [[ "$EVENT" == "delete" ]]; then
+  docker inspect $NAME > /dev/null 2>&1
+  if [[ "$?" == 0 ]]; then
+    docker stop $NAME > /dev/null 2>&1
+    docker rm $NAME > /dev/null 2>&1
+    echo "stop and removed $NAME"
+  fi
+  exit 0
+fi
+
 if [[ -f "$DOCKER_ARGS_HOOK" ]]; then
   ARGS=$(bash $DOCKER_ARGS_HOOK)
 fi

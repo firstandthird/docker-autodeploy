@@ -14,7 +14,8 @@ exports.hook = {
         repo: Joi.string(),
         branch: Joi.string(),
         commit: Joi.string(),
-        dockerImage: Joi.string()
+        dockerImage: Joi.string(),
+        event: Joi.string().default('push').allow(['push', 'delete'])
       }
     }
   },
@@ -33,7 +34,8 @@ exports.hook = {
         GITHUB_USER: payload.user,
         GITHUB_REPO: payload.repo,
         GITHUB_BRANCH: payload.branch,
-        DOCKER_IMAGE: payload.dockerImage
+        DOCKER_IMAGE: payload.dockerImage,
+        EVENT: payload.event
       },
       log: true
     });
