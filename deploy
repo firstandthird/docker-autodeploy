@@ -44,9 +44,9 @@ slack() {
     local username="${SLACK_NAME:-AutoDeploy}"
     local emoji="${SLACK_EMOJI:-:floppy_disk:}"
     local channel=$SLACK_CHANNEL
-    curl -X POST \
+    curl --fail --silent --show-error -X POST \
       --data-urlencode "payload={\"attachments\": [{ \"title\": \"$message\",\"color\":\"$color\" }], \"username\": \"$username\", \"channel\":\"$channel\",\"icon_emoji\": \"$emoji\"}" \
-      $SLACK_HOOK
+      $SLACK_HOOK > /dev/null
     if [[ "$?" != 0 ]]; then
       log "!Error sending to slack"
     fi
