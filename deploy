@@ -16,7 +16,7 @@ if [[ -n "$ONLY_BRANCH" && "$ONLY_BRANCH" != "$GITHUB_BRANCH" ]]; then
   exit 0
 fi
 
-if [[ -n "$SKIP_REPO" && "$GITHUB_REPO" =~ .*$SKIP_REPO.* ]]; then
+if [[ -n "$SKIP_REPO" && "$SKIP_REPO" =~ .*$GITHUB_BRANCH.* ]]; then
   log "skipping $GITHUB_REPO"
   exit 0
 fi
