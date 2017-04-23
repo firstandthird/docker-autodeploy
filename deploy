@@ -16,6 +16,11 @@ if [[ -n "$ONLY_BRANCH" && "$ONLY_BRANCH" != "$GITHUB_BRANCH" ]]; then
   exit 0
 fi
 
+if [[ -n "$SKIP_REPO" && "$GITHUB_REPO" =~ .*$SKIP_REPO.* ]]; then
+  log "skipping $GITHUB_REPO"
+  exit 0
+fi
+
 
 if [[ -n "$DOCKER_AUTH" ]]; then
   mkdir -p $HOME/.docker
