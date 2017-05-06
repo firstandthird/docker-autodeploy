@@ -1,6 +1,9 @@
 secret: '{{ENV.SECRET}}'
 deployScript: '{{CWD}}/deploy'
+envEndpoint: '{{ENV.ENV_ENDPOINT}}'
 plugins:
+  hapi-auto-handler:
+    _priority: -4
   hapi-log-response:
   hapi-method-loader:
     _enabled: false

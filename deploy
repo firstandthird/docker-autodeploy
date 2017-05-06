@@ -76,7 +76,7 @@ if [[ -n "$SWARM_MODE" ]]; then
   docker service inspect $NAME > /dev/null 2>&1
   if [[ "$?" != 0 ]]; then
     log "$NAME doesn't exist, creating"
-    docker service create $ARGS --name $NAME $AUTH_ARG $DOCKER_IMAGE
+    docker service create $ARGS $DOCKER_ARGS --name $NAME $AUTH_ARG $DOCKER_IMAGE
   else
     log "updating $NAME using $DOCKER_IMAGE"
     docker service update --force --image $DOCKER_IMAGE $AUTH_ARG $NAME
@@ -122,6 +122,7 @@ else
     --name $NAME $ARGS \
     --env VIRTUAL_HOST=$HOST \
     --env NODE_ENV=$APP_NODE_ENV \
+    $DOCKER_ARGS \
     $DOCKER_IMAGE
 
   if [[ "$?" != 0 ]]; then

@@ -1,6 +1,9 @@
+'use strict';
 const Joi = require('joi');
 const Boom = require('boom');
 const runshell = require('runshell');
+const wreck = require('wreck');
+const obj2args = require('obj2args');
 exports.hook = {
   path: '/',
   method: 'POST',
@@ -19,26 +22,62 @@ exports.hook = {
       }
     }
   },
-  handler(request, reply) {
-    const config = request.server.settings.app;
-    const secret = config.secret;
-    if (secret !== request.query.secret) {
-      return reply(Boom.unauthorized());
-    }
-
-    reply('ok');
-
-    const payload = request.payload;
-    runshell(config.deployScript, {
-      env: {
-        GITHUB_USER: payload.user,
-        GITHUB_REPO: payload.repo,
-        GITHUB_BRANCH: payload.branch,
-        DOCKER_IMAGE: payload.dockerImage,
-        EVENT: payload.event
+  handler: {
+    autoInject: {
+      config(request, done) {
+        const config = request.server.settings.app;
+        done(null, config);
       },
-      log: true
-    });
+      secret(config, request, done) {
+        const secret = config.secret;
+        if (secret !== request.query.secret) {
+          return done(Boom.unauthorized());
+        }
+        done(null, secret);
+      },
+      envConfig(config, done) {
+        if (!config.envEndpoint) {
+          return done(null, {});
+        }
+
+        wreck.get(config.envEndpoint, { json: true }, (err, res, payload) => {
+          if (err) {
+            return done(err);
+          }
+          done(null, payload);
+        });
+      },
+      payload(request, done) {
+        done(null, request.payload);
+      },
+      args(envConfig, payload, done) {
+        const repoEnv = envConfig[payload.repo];
+        if (!repoEnv) {
+          return done();
+        }
+        const env = repoEnv[payload.branch] || repoEnv['*'] || {};
+        const args = obj2args({ e: env });
+        done(null, args);
+      },
+      run(payload, secret, args, config, done) {
+        console.log(payload, args);
+        runshell(config.deployScript, {
+          env: {
+            GITHUB_USER: payload.user,
+            GITHUB_REPO: payload.repo,
+            GITHUB_BRANCH: payload.branch,
+            DOCKER_IMAGE: payload.dockerImage,
+            DOCKER_ARGS: args || '',
+            EVENT: payload.event
+          },
+          log: true
+        });
+        done();
+      },
+      reply(secret, done) {
+        done(null, 'ok');
+      }
+    }
   }
 };
 
