@@ -8,7 +8,8 @@ app:
     VIRTUAL_HOST: 'autodeploy.*'
     SECRET: 'abc123'
     SLACK_HOOK:
-    SKIP_REPO:
+    REPO_WHITELIST:
+    REPO_BLACKLIST:
     SLACK_CHANNEL:
     SWARM_MODE:
     DOCKER_AUTH:
