@@ -41,7 +41,7 @@ exports.hook = {
         if (!config.name) {
           const [repo, name] = image.split('/');
           config.repository = repo;
-          config.name = name;
+          config.name = `${name}_${tag}`;
         }
         done(null, config);
       },
