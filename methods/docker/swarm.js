@@ -1,5 +1,6 @@
 const async = require('async');
 const Docker = require('dockerode');
+const aug = require('aug');
 
 module.exports = function(config, allDone) {
   const server = this;
@@ -38,7 +39,7 @@ module.exports = function(config, allDone) {
           }
         }
       };
-      const task = Object.assign(defaults, config.serviceInfo || {});
+      const task = aug(true, {}, defaults, config.serviceInfo || {});
       docker.createService(task, done);
     },
     update(docker, service, inspect, done) {
@@ -55,7 +56,7 @@ module.exports = function(config, allDone) {
           ForceUpdate: 1
         }
       };
-      const task = Object.assign(defaults, config.serviceInfo || {});
+      const task = aug(true, {}, defaults, config.serviceInfo || {});
       service.update(task, done);
     }
   }, (err, results) => {

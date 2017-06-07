@@ -15,6 +15,7 @@
     "lint": "eslint . "
   },
   "dependencies": {
+    "aug": "^1.0.2",
     "boom": "^5.1.0",
     "dockerode": "^2.4.3",
     "hapi-auto-handler": "^1.4.1",
