@@ -1,9 +1,6 @@
 'use strict';
 const Joi = require('joi');
 const Boom = require('boom');
-const runshell = require('runshell');
-const wreck = require('wreck');
-const obj2args = require('obj2args');
 exports.hook = {
   path: '/',
   method: 'POST',
@@ -13,69 +10,56 @@ exports.hook = {
         secret: Joi.string()
       },
       payload: {
-        user: Joi.string(),
-        repo: Joi.string(),
-        branch: Joi.string(),
-        commit: Joi.string(),
-        dockerImage: Joi.string(),
-        event: Joi.string().default('push').allow(['push', 'delete'])
+        image: Joi.string(),
+        event: Joi.string().default('start').allow(['start', 'stop'])
       }
     }
   },
   handler: {
     autoInject: {
-      config(request, done) {
-        const config = request.server.settings.app;
-        done(null, config);
-      },
-      secret(config, request, done) {
-        const secret = config.secret;
+      secret(settings, request, done) {
+        const secret = settings.secret;
         if (secret !== request.query.secret) {
           return done(Boom.unauthorized());
         }
         done(null, secret);
       },
-      envConfig(config, done) {
-        if (!config.envEndpoint) {
-          return done(null, {});
-        }
-
-        wreck.get(config.envEndpoint, { json: true }, (err, res, payload) => {
-          if (err) {
-            return done(err);
-          }
-          done(null, payload);
-        });
-      },
       payload(request, done) {
         done(null, request.payload);
       },
-      args(envConfig, payload, done) {
-        const repoEnv = envConfig[payload.repo];
-        if (!repoEnv) {
+      config(settings, payload, request, secret, done) {
+        const [image, tag] = payload.image.split(':');
+        const config = settings.images[image];
+        if (!config) {
           return done();
         }
-        const env = repoEnv[payload.branch] || repoEnv['*'] || {};
-        const args = obj2args({ e: env });
-        done(null, args);
+        if (config.whitelist && !tag.match(config.whitelist)) {
+          return done();
+        }
+        config.image = image;
+        config.tag = tag;
+        if (!config.name) {
+          const [repo, name] = image.split('/');
+          config.repository = repo;
+          config.name = name;
+        }
+        done(null, config);
       },
-      run(payload, secret, args, config, done) {
-        console.log(payload, args);
-        runshell(config.deployScript, {
-          env: {
-            GITHUB_USER: payload.user,
-            GITHUB_REPO: payload.repo,
-            GITHUB_BRANCH: payload.branch,
-            DOCKER_IMAGE: payload.dockerImage,
-            DOCKER_ARGS: args || '',
-            EVENT: payload.event
-          },
-          log: true
-        });
+      run(config, settings, server, payload, done) {
+        if (!config) {
+          server.log(['deploy', 'skip'], {
+            message: `Skipping ${payload.image}`
+          });
+          return done();
+        }
+        if (settings.swarmMode) {
+          return server.methods.docker.swarm(config, done);
+        }
+        done(new Error('only swarm mode is supported right now'));
+      },
+      send(run, reply, done) {
+        reply(null, 'ok');
         done();
-      },
-      reply(secret, done) {
-        done(null, 'ok');
       }
     }
   }

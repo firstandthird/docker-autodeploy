@@ -1,18 +1,15 @@
 app:
   build: '.'
+  command: 'npm run dev'
   dockerfile: 'DockerfileDev'
   volumes:
     - ".:/home/app/src"
     - "/var/run/docker.sock:/var/run/docker.sock"
+    - "$HOME/.docker:/home/app/.docker"
   environment:
     VIRTUAL_HOST: 'autodeploy.*'
     SECRET: 'abc123'
     SLACK_HOOK:
-    REPO_WHITELIST:
-    REPO_BLACKLIST:
-    SLACK_CHANNEL:
     SWARM_MODE:
-    DOCKER_AUTH:
-    DOCKER_ARGS_HOOK: '/home/app/src/example-args'
-    ENV_ENDPOINT:
+    RAPPTOR_CONFIG_URL:
 
