@@ -52,12 +52,20 @@ exports.hook = {
           });
           return done();
         }
+        server.log(['deploy', 'info'], {
+          message: `Starting ${config.name}`,
+          config,
+          payload
+        });
         if (settings.swarmMode) {
           return server.methods.docker.swarm(config, done);
         }
         done(new Error('only swarm mode is supported right now'));
       },
-      send(run, reply, done) {
+      send(run, server, config, reply, done) {
+        server.log(['deploy', 'success'], {
+          message: `${config.name} started`
+        });
         reply(null, 'ok');
         done();
       }

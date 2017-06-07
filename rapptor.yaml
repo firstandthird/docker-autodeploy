@@ -2,8 +2,22 @@ secret: '{{ENV.SECRET}}'
 deployScript: '{{CWD}}/deploy'
 envEndpoint: '{{ENV.ENV_ENDPOINT}}'
 swarmMode: '({{ENV.SWARM_MODE}})'
+slackHook: '{{ENV.SLACK_HOOK}}'
 plugins:
   hapi-auto-handler:
     _priority: -4
   hapi-log-response:
+  hapi-logr:
+    reporters:
+      logr-slack:
+        reporter: 'logr-slack'
+        enabled: '{{(slackHook)}}'
+        options:
+          hideTags: true
+          filter:
+            - 'success'
+            - 'error'
+          slackHook: '{{slackHook}}'
+          username: 'AutoBuild'
+          icon_emoji: ':wrench:'
 
