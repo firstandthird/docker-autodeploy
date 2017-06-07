@@ -18,6 +18,6 @@ plugins:
             - 'success'
             - 'error'
           slackHook: '{{slackHook}}'
-          username: 'AutoBuild'
+          username: 'AutoDeploy'
           icon_emoji: ':wrench:'
 
