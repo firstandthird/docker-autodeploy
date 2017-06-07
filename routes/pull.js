@@ -9,7 +9,7 @@ exports.pull = {
       return reply(Boom.badRequest());
     }
     const server = request.server;
-    const auth = server.methods.docker.dockerAuth();
+    const auth = server.methods.docker.authConfig();
     const docker = new Docker();
     docker.pull(image, { authconfig: auth }, (err, stream) => {
       if (err) {

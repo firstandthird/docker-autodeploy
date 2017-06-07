@@ -1,9 +1,11 @@
 const async = require('async');
+const Docker = require('dockerode');
 
 module.exports = function(config, allDone) {
+  const server = this;
   async.autoInject({
-    docker(server, done) {
-      const docker = server.methods.docker.dockerWithAuth();
+    docker(done) {
+      const docker = new Docker();
       done(null, docker);
     },
     service(docker, done) {
@@ -26,7 +28,9 @@ module.exports = function(config, allDone) {
       if (inspect) {
         return done();
       }
+      const auth = server.methods.docker.authConfig();
       const defaults = {
+        authconfig: auth,
         Name: config.name,
         TaskTemplate: {
           ContainerSpec: {
