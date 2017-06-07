@@ -43,6 +43,15 @@ exports.hook = {
           config.repository = repo;
           config.name = `${name}_${tag}`;
         }
+        //labels array into object
+        if (config.serviceInfo && config.serviceInfo.Labels && Array.isArray(config.serviceInfo.Labels)) {
+          const labelObj = {};
+          config.serviceInfo.Labels.forEach((label) => {
+            const [key, value] = label.split('=');
+            labelObj[key] = value;
+          });
+          config.serviceInfo.Labels = labelObj;
+        }
         done(null, config);
       },
       run(config, settings, server, payload, done) {
