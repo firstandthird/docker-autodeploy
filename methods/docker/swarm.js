@@ -45,7 +45,7 @@ module.exports = function(config, allDone) {
       if (!inspect) {
         return done();
       }
-      const task = {
+      const defaults = {
         Name: config.name,
         version: parseInt(inspect.Version.Index, 10),
         TaskTemplate: {
@@ -55,6 +55,7 @@ module.exports = function(config, allDone) {
           ForceUpdate: 1
         }
       };
+      const task = Object.assign(defaults, config.serviceInfo || {});
       service.update(task, done);
     }
   }, (err, results) => {
