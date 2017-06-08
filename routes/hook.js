@@ -9,6 +9,9 @@ exports.hook = {
       query: {
         secret: Joi.string()
       },
+      options: {
+        allowUnknown: true
+      },
       payload: {
         image: Joi.string(),
         event: Joi.string().default('start').allow(['start', 'stop'])
