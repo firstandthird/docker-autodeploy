@@ -32,7 +32,7 @@ exports.hook = {
       },
       config(settings, payload, request, secret, done) {
         const [image, tag] = payload.image.split(':');
-        const config = settings.images[image];
+        const config = Object.assign({}, settings.images[image]);
         if (typeof config !== 'object') {
           return done();
         }
