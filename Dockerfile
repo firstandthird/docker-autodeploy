@@ -6,6 +6,7 @@ RUN chmod +x /usr/local/bin/dumb-init
 EXPOSE 8080
 
 ENV HOME=/home/app
+ENV NODE_ENV=production
 WORKDIR $HOME/src
 
 COPY package.json $HOME/src/package.json
