@@ -11,5 +11,4 @@ app:
     SECRET: 'abc123'
     SLACK_HOOK:
     SWARM_MODE:
-    RAPPTOR_CONFIG_URL:
 

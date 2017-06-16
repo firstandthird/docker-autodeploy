@@ -39,7 +39,7 @@ module.exports = function(config, allDone) {
           }
         }
       };
-      const task = aug(true, {}, defaults, config.serviceInfo || {});
+      const task = aug(true, {}, defaults, config.serviceConfig || {});
       docker.createService(task, done);
     },
     update(docker, service, inspect, done) {
@@ -56,7 +56,7 @@ module.exports = function(config, allDone) {
           ForceUpdate: 1
         }
       };
-      const task = aug(true, {}, defaults, config.serviceInfo || {});
+      const task = aug(true, {}, defaults, config.serviceConfig || {});
       service.update(task, done);
     }
   }, (err, results) => {

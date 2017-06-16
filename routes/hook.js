@@ -14,7 +14,8 @@ exports.hook = {
       },
       payload: {
         image: Joi.string(),
-        event: Joi.string().default('start').allow(['start', 'stop'])
+        event: Joi.string().default('start').allow(['start', 'stop']),
+        serviceConfig: Joi.object()
       }
     }
   },
@@ -32,28 +33,24 @@ exports.hook = {
       },
       config(settings, payload, request, secret, done) {
         const [image, tag] = payload.image.split(':');
-        const config = Object.assign({}, settings.images[image]);
-        if (typeof config !== 'object') {
-          return done();
-        }
-        if (config.whitelist && !tag.match(config.whitelist)) {
-          return done();
-        }
-        config.image = image;
-        config.tag = tag;
-        if (!config.name) {
-          const [repo, name] = image.split('/');
-          config.repository = repo;
-          config.name = `${name}_${tag}`;
-        }
+        const [repo, name] = image.split('/');
+
+        const config = {
+          image,
+          tag,
+          repository: repo,
+          name: `${name}_${tag}`,
+          serviceConfig: payload.serviceConfig
+        };
+
         //labels array into object
-        if (config.serviceInfo && config.serviceInfo.Labels && Array.isArray(config.serviceInfo.Labels)) {
+        if (config.serviceConfig && config.serviceConfig.Labels && Array.isArray(config.serviceConfig.Labels)) {
           const labelObj = {};
-          config.serviceInfo.Labels.forEach((label) => {
+          config.serviceConfig.Labels.forEach((label) => {
             const [key, value] = label.split('=');
             labelObj[key] = value;
           });
-          config.serviceInfo.Labels = labelObj;
+          config.serviceConfig.Labels = labelObj;
         }
         done(null, config);
       },
