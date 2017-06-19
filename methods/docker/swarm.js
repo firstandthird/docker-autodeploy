@@ -2,15 +2,29 @@ const async = require('async');
 const Docker = require('dockerode');
 const aug = require('aug');
 
-module.exports = function(config, allDone) {
+module.exports = function(baseConfig, allDone) {
   const server = this;
   async.autoInject({
     docker(done) {
       const docker = new Docker();
       done(null, docker);
     },
-    service(docker, done) {
-      const service = docker.getService(config.name);
+    taskConfig(done) {
+      const auth = server.methods.docker.authConfig();
+      const defaults = {
+        authconfig: auth,
+        Name: baseConfig.name,
+        TaskTemplate: {
+          ContainerSpec: {
+            Image: `${baseConfig.image}:${baseConfig.tag}`
+          }
+        }
+      };
+      const task = aug(true, {}, defaults, baseConfig.serviceConfig || {});
+      done(null, task);
+    },
+    service(taskConfig, docker, done) {
+      const service = docker.getService(taskConfig.Name);
       done(null, service);
     },
     inspect(service, done) {
@@ -25,39 +39,19 @@ module.exports = function(config, allDone) {
         done(null, info);
       });
     },
-    start(docker, inspect, done) {
+    start(taskConfig, docker, inspect, done) {
       if (inspect) {
         return done();
       }
-      const auth = server.methods.docker.authConfig();
-      const defaults = {
-        authconfig: auth,
-        Name: config.name,
-        TaskTemplate: {
-          ContainerSpec: {
-            Image: `${config.image}:${config.tag}`
-          }
-        }
-      };
-      const task = aug(true, {}, defaults, config.serviceConfig || {});
-      docker.createService(task, done);
+      docker.createService(taskConfig, done);
     },
-    update(docker, service, inspect, done) {
+    update(docker, service, taskConfig, inspect, done) {
       if (!inspect) {
         return done();
       }
-      const defaults = {
-        Name: config.name,
-        version: parseInt(inspect.Version.Index, 10),
-        TaskTemplate: {
-          ContainerSpec: {
-            Image: `${config.image}:${config.tag}`,
-          },
-          ForceUpdate: 1
-        }
-      };
-      const task = aug(true, {}, defaults, config.serviceConfig || {});
-      service.update(task, done);
+      taskConfig.version = parseInt(inspect.Version.Index, 10);
+      taskConfig.TaskTemplate.ForceUpdate = 1;
+      service.update(taskConfig, done);
     }
   }, (err, results) => {
     allDone(err);
