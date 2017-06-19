@@ -7,6 +7,7 @@ app:
     - "/var/run/docker.sock:/var/run/docker.sock"
     - "$HOME/.docker:/home/app/.docker"
   environment:
+    DEBUG: 1
     VIRTUAL_HOST: 'autodeploy.*'
     SECRET: 'abc123'
     SLACK_HOOK:

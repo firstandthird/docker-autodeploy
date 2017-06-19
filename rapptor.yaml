@@ -1,3 +1,4 @@
+debug: '{{ENV.DEBUG}}'
 secret: '{{ENV.SECRET}}'
 deployScript: '{{CWD}}/deploy'
 envEndpoint: '{{ENV.ENV_ENDPOINT}}'

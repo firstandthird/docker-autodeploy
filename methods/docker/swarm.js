@@ -13,12 +13,11 @@ module.exports = function(config, allDone) {
       done(null, auth);
     },
     task(auth, done) {
-      const task = {
-        auth,
-        Name: config.Name,
-        TaskTemplate: config.TaskTemplate
-      };
-      done(null, task);
+      if (server.settings.app.debug) {
+        server.log(['swarm', 'debug'], config);
+      }
+      config.auth = auth;
+      done(null, config);
     },
     service(task, docker, done) {
       const service = docker.getService(task.Name);
