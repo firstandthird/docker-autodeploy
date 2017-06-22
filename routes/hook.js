@@ -2,6 +2,7 @@
 const Joi = require('joi');
 const Boom = require('boom');
 const confi = require('confi');
+const Docker = require('dockerode');
 exports.hook = {
   path: '/',
   method: 'POST',
@@ -50,13 +51,12 @@ exports.hook = {
         }
         done(null, config);
       },
-      run(config, labels, settings, server, payload, done) {
-        if (!config) {
-          server.log(['deploy', 'skip'], {
-            message: `Skipping ${payload.image}`
-          });
-          return done();
-        }
+      pull(config, server, payload, done) {
+        const auth = server.methods.docker.authConfig();
+        const docker = new Docker();
+        docker.pull(config.TaskTemplate.ContainerSpec.Image, { authconfig: auth }, done);
+      },
+      run(config, labels, settings, server, payload, pull, done) {
         server.log(['deploy', 'info'], `Starting ${config.Name}`);
         if (settings.swarmMode) {
           return server.methods.docker.swarm(config, done);
