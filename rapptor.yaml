@@ -21,4 +21,10 @@ plugins:
           slackHook: '{{slackHook}}'
           username: 'AutoDeploy'
           icon_emoji: ':wrench:'
-
+  hapi-pagedata:
+    _enabled: '{{(ENV.PAGEDATA_HOST)}}'
+    verbose: true
+    host: '{{ENV.PAGEDATA_HOST}}'
+    key: '{{ENV.PAGEDATA_KEY}}'
+    hookEndpoint: '/api/pagedata/hook'
+    enableCache: false

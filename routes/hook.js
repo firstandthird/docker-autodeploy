@@ -1,7 +1,6 @@
 'use strict';
 const Joi = require('joi');
 const Boom = require('boom');
-const confi = require('confi');
 const Docker = require('dockerode');
 exports.hook = {
   path: '/',
@@ -17,6 +16,7 @@ exports.hook = {
       payload: {
         event: Joi.string().default('start').allow(['start', 'stop']),
         url: Joi.string(),
+        slug: Joi.string(),
         vars: Joi.object()
       }
     }
@@ -33,11 +33,8 @@ exports.hook = {
       payload(request, done) {
         done(null, request.payload);
       },
-      config(settings, payload, done) {
-        confi({
-          url: payload.url,
-          context: payload.vars
-        }, done);
+      config(server, payload, done) {
+        server.methods.getConfig(payload, done);
       },
       labels(config, done) {
         //labels array into object
