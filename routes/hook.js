@@ -48,12 +48,7 @@ exports.hook = {
         }
         done(null, config);
       },
-      pull(config, server, payload, done) {
-        const auth = server.methods.docker.authConfig();
-        const docker = new Docker();
-        docker.pull(config.TaskTemplate.ContainerSpec.Image, { authconfig: auth }, done);
-      },
-      run(config, labels, settings, server, payload, pull, done) {
+      run(config, labels, settings, server, payload, done) {
         server.log(['deploy', 'info'], `Starting ${config.Name}`);
         if (settings.swarmMode) {
           return server.methods.docker.swarm(config, done);

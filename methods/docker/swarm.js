@@ -3,6 +3,7 @@ const Docker = require('dockerode');
 
 module.exports = function(config, allDone) {
   const server = this;
+  const debug = server.settings.app.debug;
   async.autoInject({
     docker(done) {
       const docker = new Docker();
@@ -13,8 +14,8 @@ module.exports = function(config, allDone) {
       done(null, auth);
     },
     task(auth, done) {
-      if (server.settings.app.debug) {
-        server.log(['swarm', 'debug'], config);
+      if (debug) {
+        server.log(['swarm', 'task', 'debug'], config);
       }
       config.auth = auth;
       done(null, config);
@@ -23,7 +24,19 @@ module.exports = function(config, allDone) {
       const service = docker.getService(task.Name);
       done(null, service);
     },
-    inspect(service, done) {
+    pull(auth, task, docker, done) {
+      const image = task.TaskTemplate.ContainerSpec.Image;
+      docker.pull(image, { authconfig: auth }, (err, stream) => {
+        if (err) {
+          return done(err);
+        }
+        docker.modem.followProgress(stream, done);
+        if (debug) {
+          server.log(['swarm', 'pull', 'debug'], image);
+        }
+      });
+    },
+    inspect(pull, service, done) {
       service.inspect((err, info) => {
         if (err) {
           if (err.statusCode === 404) {
@@ -39,6 +52,9 @@ module.exports = function(config, allDone) {
       if (inspect) {
         return done();
       }
+      if (debug) {
+        server.log(['swarm', 'create', 'debug'], { create: task });
+      }
       docker.createService(task, done);
     },
     update(docker, task, service, inspect, done) {
@@ -47,6 +63,9 @@ module.exports = function(config, allDone) {
       }
       task.version = parseInt(inspect.Version.Index, 10);
       task.TaskTemplate.ForceUpdate = 1;
+      if (debug) {
+        server.log(['swarm', 'update', 'debug'], { update: task });
+      }
       service.update(task, done);
     }
   }, (err, results) => {
