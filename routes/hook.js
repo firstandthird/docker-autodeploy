@@ -18,6 +18,7 @@ exports.hook = {
         branch: Joi.string(),
         commit: Joi.string(),
         dockerImage: Joi.string(),
+        image: Joi.string(),
         event: Joi.string().default('push').allow(['push', 'delete'])
       }
     }
@@ -48,6 +49,9 @@ exports.hook = {
         });
       },
       payload(request, done) {
+        if (request.payload.image && !request.payload.dockerImage) {
+          request.payload.dockerImage = request.payload.image;
+        }
         done(null, request.payload);
       },
       args(envConfig, payload, done) {
