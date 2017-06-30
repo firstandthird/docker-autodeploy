@@ -19,7 +19,7 @@ plugins:
             - 'success'
             - 'error'
           slackHook: '{{slackHook}}'
-          username: 'AutoDeploy'
+          username: '{{ENV.SLACK_NAME || "AutoDeploy" }}'
           icon_emoji: ':wrench:'
   hapi-pagedata:
     _enabled: '{{(ENV.PAGEDATA_HOST)}}'
