@@ -53,14 +53,13 @@ exports.hook = {
         done(null, config);
       },
       run(config, labels, settings, server, payload, done) {
-        server.log(['deploy', 'info'], `Starting ${config.Name}`);
         if (settings.swarmMode) {
           return server.methods.docker.swarm(config, done);
         }
         done(new Error('only swarm mode is supported right now'));
       },
       send(run, server, config, payload, reply, done) {
-        let message = `${config.Name} started`;
+        let message = `Updating ${config.Name} `;
         if (config.domain) {
           message += ` at ${config.domain}`;
         }
