@@ -1,7 +1,6 @@
 'use strict';
 const Joi = require('joi');
 const Boom = require('boom');
-const Docker = require('dockerode');
 exports.hook = {
   path: '/',
   method: 'POST',
