@@ -46,6 +46,10 @@ exports.hook = {
           });
           config.Labels = labelObj;
         }
+        if (!config.Labels) {
+          config.Labels = {};
+        }
+        config.Labels['autodeploy.updated'] = new Date().toString();
         done(null, config);
       },
       run(config, labels, settings, server, payload, done) {
