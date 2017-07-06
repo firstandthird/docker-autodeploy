@@ -45,13 +45,16 @@ exports.hook = {
           });
           config.Labels = labelObj;
         }
-        if (!config.Labels) {
-          config.Labels = {};
-        }
-        config.Labels['autodeploy.updated'] = new Date().toString();
         done(null, config);
       },
-      run(config, labels, settings, server, payload, done) {
+      env(config, done) {
+        if (!config.TaskTemplate.ContainerSpec.Env) {
+          config.TaskTemplate.ContainerSpec.Env = [];
+        }
+        config.TaskTemplate.ContainerSpec.Env.push(`DEPLOY_UPDATED=${new Date().getTime()}`);
+        done();
+      },
+      run(config, labels, env, settings, server, payload, done) {
         if (settings.swarmMode) {
           return server.methods.docker.swarm(config, done);
         }
