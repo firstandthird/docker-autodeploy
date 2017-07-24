@@ -26,5 +26,5 @@ plugins:
     verbose: true
     host: '{{ENV.PAGEDATA_HOST}}'
     key: '{{ENV.PAGEDATA_KEY}}'
+    status: 'draft'
     hookEndpoint: '/api/pagedata/hook'
-    enableCache: false
