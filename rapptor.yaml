@@ -4,6 +4,7 @@ deployScript: '{{CWD}}/deploy'
 envEndpoint: '{{ENV.ENV_ENDPOINT}}'
 swarmMode: '({{ENV.SWARM_MODE}})'
 slackHook: '{{ENV.SLACK_HOOK}}'
+dockerHubAuth: '{{ENV.DOCKERHUB_AUTH}}'
 plugins:
   hapi-auto-handler:
     _priority: -4

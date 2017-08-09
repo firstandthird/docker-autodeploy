@@ -5,7 +5,7 @@ app:
   volumes:
     - ".:/home/app/src"
     - "/var/run/docker.sock:/var/run/docker.sock"
-    - "$HOME/.docker:/home/app/.docker"
+    #- "$HOME/.docker:/home/app/.docker"
   environment:
     DEBUG: 1
     VIRTUAL_HOST: 'autodeploy.*'
@@ -14,4 +14,5 @@ app:
     SWARM_MODE:
     PAGEDATA_HOST:
     PAGEDATA_KEY:
+    DOCKERHUB_AUTH:
 
