@@ -13,11 +13,10 @@ module.exports = function(config, allDone) {
       const auth = server.methods.docker.authConfig();
       done(null, auth);
     },
-    task(auth, done) {
+    task(done) {
       if (debug) {
         server.log(['swarm', 'task', 'debug'], config);
       }
-      config.auth = auth;
       done(null, config);
     },
     service(task, docker, done) {
@@ -48,16 +47,16 @@ module.exports = function(config, allDone) {
         done(null, info);
       });
     },
-    start(docker, task, inspect, done) {
+    start(auth, docker, task, inspect, done) {
       if (inspect) {
         return done();
       }
       if (debug) {
         server.log(['swarm', 'create', 'debug'], { create: task });
       }
-      docker.createService(task, done);
+      docker.createService(auth, task, done);
     },
-    update(docker, task, service, inspect, done) {
+    update(auth, docker, task, service, inspect, done) {
       if (!inspect) {
         return done();
       }
@@ -66,7 +65,7 @@ module.exports = function(config, allDone) {
       if (debug) {
         server.log(['swarm', 'update', 'debug'], { update: task });
       }
-      service.update(task, done);
+      service.update(auth, task, done);
     }
   }, (err, results) => {
     allDone(err);
