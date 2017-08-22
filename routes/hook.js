@@ -48,6 +48,9 @@ exports.hook = {
         done(null, config);
       },
       env(config, done) {
+        if (!config.TaskTemplate) {
+          return done();
+        }
         if (!config.TaskTemplate.ContainerSpec.Env) {
           config.TaskTemplate.ContainerSpec.Env = [];
         }
@@ -56,12 +59,16 @@ exports.hook = {
       },
       run(config, labels, env, settings, server, payload, done) {
         if (settings.swarmMode) {
+          //compose
+          if (config.version) {
+            return server.methods.docker.stackDeploy(config, done);
+          }
           return server.methods.docker.swarm(config, done);
         }
         done(new Error('only swarm mode is supported right now'));
       },
       send(run, server, config, payload, reply, done) {
-        let message = `Updating ${config.Name} `;
+        let message = `Updating ${config.Name || config.name} `;
         if (config.domain) {
           message += ` at ${config.domain}`;
         }
