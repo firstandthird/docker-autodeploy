@@ -80,9 +80,12 @@ exports.hook = {
         done(new Error('only swarm mode is supported right now'));
       },
       send(run, server, config, payload, reply, done) {
-        let message = `Updating ${config.Name || config.name} `;
+        let message = `Updating ${config.Name || config.name}`;
         if (config.domain) {
           message += ` at ${config.domain}`;
+        }
+        if (payload.stop) {
+          message += ` stopping in ${payload.stop} minutes`;
         }
         server.log(['deploy', 'success'], message);
         reply(null, 'ok');
