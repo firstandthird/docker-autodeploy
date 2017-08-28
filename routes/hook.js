@@ -16,7 +16,8 @@ exports.hook = {
         event: Joi.string().default('start').allow(['start', 'stop']),
         url: Joi.string(),
         slug: Joi.string(),
-        vars: Joi.object()
+        vars: Joi.object(),
+        stop: Joi.number()
       }
     }
   },
@@ -55,6 +56,17 @@ exports.hook = {
           config.TaskTemplate.ContainerSpec.Env = [];
         }
         config.TaskTemplate.ContainerSpec.Env.push(`DEPLOY_UPDATED=${new Date().getTime()}`);
+        done();
+      },
+      stop(payload, labels, config, done) {
+        if (!payload.stop) {
+          return done();
+        }
+        if (!config.Labels) {
+          config.Labels = {};
+        }
+        const stopAt = new Date().getTime() + (1000 * 60 * payload.stop);
+        config.Labels['autodeploy.stop'] = stopAt.toString();
         done();
       },
       run(config, labels, env, settings, server, payload, done) {

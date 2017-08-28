@@ -29,3 +29,8 @@ plugins:
     key: '{{ENV.PAGEDATA_KEY}}'
     status: 'draft'
     hookEndpoint: '/api/pagedata/hook'
+  hapi-method-scheduler:
+    schedule:
+      - method: 'docker.stopServices'
+        time: 'every 1 hour'
+        runOnStart: true
