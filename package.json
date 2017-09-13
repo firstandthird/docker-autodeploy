@@ -27,7 +27,7 @@
     "js-yaml": "^3.9.1",
     "logr-slack": "^1.1.0",
     "obj2args": "^1.1.0",
-    "rapptor": "^2.1.1",
+    "rapptor": "^2.3.0",
     "runshell": "^0.3.1",
     "tmp": "0.0.33",
     "varson": "^1.0.1",
