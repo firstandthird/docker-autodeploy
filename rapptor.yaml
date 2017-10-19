@@ -2,13 +2,11 @@ debug: '{{ENV.DEBUG}}'
 secret: '{{ENV.SECRET}}'
 deployScript: '{{CWD}}/deploy'
 envEndpoint: '{{ENV.ENV_ENDPOINT}}'
-swarmMode: '({{ENV.SWARM_MODE}})'
 slackHook: '{{ENV.SLACK_HOOK}}'
 dockerHubAuth: '{{ENV.DOCKERHUB_AUTH}}'
 plugins:
   hapi-auto-handler:
     _priority: -4
-  hapi-log-response:
   hapi-logr:
     reporters:
       logr-slack:
@@ -22,15 +20,3 @@ plugins:
           slackHook: '{{slackHook}}'
           username: '{{ENV.SLACK_NAME || "AutoDeploy" }}'
           icon_emoji: ':wrench:'
-  hapi-pagedata:
-    _enabled: '{{(ENV.PAGEDATA_HOST)}}'
-    verbose: true
-    host: '{{ENV.PAGEDATA_HOST}}'
-    key: '{{ENV.PAGEDATA_KEY}}'
-    status: 'draft'
-    hookEndpoint: '/api/pagedata/hook'
-  hapi-method-scheduler:
-    schedule:
-      - method: 'docker.stopServices'
-        time: 'every 1 hour'
-        runOnStart: true

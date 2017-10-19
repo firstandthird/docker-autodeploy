@@ -1,6 +1,8 @@
 'use strict';
 const Joi = require('joi');
 const Boom = require('boom');
+const Docker = require('dockerode');
+const aug = require('aug');
 exports.hook = {
   path: '/',
   method: 'POST',
@@ -9,15 +11,11 @@ exports.hook = {
       query: {
         secret: Joi.string()
       },
-      options: {
-        allowUnknown: true
-      },
       payload: {
-        event: Joi.string().default('start').allow(['start', 'stop']),
-        url: Joi.string(),
-        slug: Joi.string(),
-        vars: Joi.object(),
-        stop: Joi.number()
+        name: Joi.string(),
+        image: Joi.string(),
+        environment: Joi.object(),
+        labels: Joi.object()
       }
     }
   },
@@ -30,66 +28,60 @@ exports.hook = {
         }
         done(null, secret);
       },
+      docker(done) {
+        const docker = new Docker();
+        done(null, docker);
+      },
+      auth(server, done) {
+        const auth = server.methods.docker.authConfig();
+        done(null, auth);
+      },
       payload(request, done) {
         done(null, request.payload);
       },
-      config(server, payload, done) {
-        server.methods.getConfig(payload, done);
+      service(docker, payload, done) {
+        const service = docker.getService(payload.name);
+        done(null, service);
       },
-      labels(config, done) {
-        //labels array into object
-        if (config && config.Labels && Array.isArray(config.Labels)) {
-          const labelObj = {};
-          config.Labels.forEach((label) => {
-            const [key, value] = label.split('=');
-            labelObj[key] = value;
-          });
-          config.Labels = labelObj;
-        }
-        done(null, config);
+      serviceTask(service, done) {
+        service.inspect(done);
       },
-      env(config, done) {
-        if (!config.TaskTemplate) {
-          return done();
-        }
-        if (!config.TaskTemplate.ContainerSpec.Env) {
-          config.TaskTemplate.ContainerSpec.Env = [];
-        }
-        config.TaskTemplate.ContainerSpec.Env.push(`DEPLOY_UPDATED=${new Date().getTime()}`);
-        done();
-      },
-      stop(payload, labels, config, done) {
-        if (!payload.stop) {
-          return done();
-        }
-        if (!config.Labels) {
-          config.Labels = {};
-        }
-        const stopAt = new Date().getTime() + (1000 * 60 * payload.stop);
-        config.Labels['autodeploy.stop'] = stopAt.toString();
-        done();
-      },
-      run(config, labels, env, settings, server, payload, done) {
-        if (settings.swarmMode) {
-          //compose
-          if (config.version) {
-            return server.methods.docker.stackDeploy(config, done);
+      taskSpec(serviceTask, payload, done) {
+        const task = {
+          version: parseInt(serviceTask.Version.Index, 10),
+          TaskTemplate: {
+            ContainerSpec: {},
+            ForceUpdate: 1,
           }
-          return server.methods.docker.swarm(config, done);
+        };
+        if (payload.image) {
+          task.TaskTemplate.ContainerSpec.Image = payload.image;
         }
-        done(new Error('only swarm mode is supported right now'));
+        if (payload.labels) {
+          task.Labels = payload.labels;
+        }
+        if (payload.environment && serviceTask.Spec.TaskTemplate.ContainerSpec.Env) {
+          task.TaskTemplate.ContainerSpec.Env = serviceTask.Spec.TaskTemplate.ContainerSpec.Env.map(env => {
+            const key = env.split('=')[0];
+            if (payload.environment[key]) {
+              return `${key}:${payload.environment[key]}`;
+            }
+            return env;
+          });
+        }
+        const newTask = aug(serviceTask.Spec, task);
+        done(null, newTask);
       },
-      send(run, server, config, payload, reply, done) {
-        let message = `Updating ${config.Name || config.name}`;
-        if (config.domain) {
-          message += ` at ${config.domain}`;
-        }
-        if (payload.stop) {
-          message += ` stopping in ${payload.stop} minutes`;
+      update(taskSpec, service, auth, done) {
+        service.update(auth, taskSpec, done);
+      },
+      reply(server, update, payload, done) {
+        let message = `Updating ${payload.name}`;
+        if (payload.domain) {
+          message += ` at ${payload.domain}`;
         }
         server.log(['deploy', 'success'], message);
-        reply(null, 'ok');
-        done();
+        done(null, 'ok');
       }
     }
   }
