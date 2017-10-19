@@ -12,7 +12,7 @@ ENV HOME=/home/app
 ENV NODE_ENV=production
 WORKDIR $HOME/src
 
-COPY package.json package-lock.json $HOME/src/
+COPY package.json $HOME/src/
 RUN npm install --production
 
 COPY . $HOME/src
