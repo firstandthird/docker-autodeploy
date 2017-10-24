@@ -75,7 +75,22 @@ exports.hook = {
         }
         done(null, newTask);
       },
-      update(taskSpec, service, auth, done) {
+      pull(auth, payload, server, settings, docker, done) {
+        if (!payload.image) {
+          return done();
+        }
+        const image = payload.image;
+        docker.pull(image, { authconfig: auth }, (err, stream) => {
+          if (err) {
+            return done(err);
+          }
+          docker.modem.followProgress(stream, done);
+          if (settings.debug) {
+            server.log(['swarm', 'pull', 'debug'], image);
+          }
+        });
+      },
+      update(pull, taskSpec, service, auth, done) {
         service.update(auth, taskSpec, done);
       },
       reply(server, update, payload, done) {
