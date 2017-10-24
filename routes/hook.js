@@ -46,7 +46,7 @@ exports.hook = {
       serviceTask(service, done) {
         service.inspect(done);
       },
-      taskSpec(serviceTask, payload, done) {
+      taskSpec(settings, server, serviceTask, payload, done) {
         const task = {
           version: parseInt(serviceTask.Version.Index, 10),
           TaskTemplate: {
@@ -70,6 +70,9 @@ exports.hook = {
           });
         }
         const newTask = aug(serviceTask.Spec, task);
+        if (settings.debug) {
+          server.log(['hook', 'debug'], newTask);
+        }
         done(null, newTask);
       },
       update(taskSpec, service, auth, done) {
