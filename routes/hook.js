@@ -60,15 +60,19 @@ exports.hook = {
         if (payload.labels) {
           task.Labels = payload.labels;
         }
-        if (payload.environment && serviceTask.Spec.TaskTemplate.ContainerSpec.Env) {
-          task.TaskTemplate.ContainerSpec.Env = serviceTask.Spec.TaskTemplate.ContainerSpec.Env.map(env => {
-            const key = env.split('=')[0];
-            if (payload.environment[key]) {
-              return `${key}:${payload.environment[key]}`;
-            }
-            return env;
-          });
+        let specEnv = {};
+        if (serviceTask.Spec.TaskTemplate.ContainerSpec.Env) {
+          specEnv = server.methods.arrToObj(serviceTask.Spec.TaskTemplate.ContainerSpec.Env);
         }
+
+        if (payload.environment) {
+          specEnv = Object.assign({}, specEnv, payload.environment);
+        }
+
+        specEnv['UPDATED'] = new Date().getTime();
+
+        serviceTask.Spec.TaskTemplate.ContainerSpec.Env = server.methods.objToArr(specEnv);
+
         const newTask = aug(serviceTask.Spec, task);
         if (settings.debug) {
           server.log(['hook', 'debug'], newTask);
