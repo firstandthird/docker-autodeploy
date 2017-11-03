@@ -3,8 +3,9 @@ module.exports = {
   method(arr) {
     const obj = {};
     arr.forEach(kvp => {
-      const [ kvar, kval ] = kvp.split('=');
-      obj[kvar] = kval;
+      const kvArr = kvp.split('=');
+      const kvar = kvArr.shift();
+      obj[kvar] = kvArr.join('=');
     });
 
     return obj;
