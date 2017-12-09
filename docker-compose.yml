@@ -11,8 +11,5 @@ app:
     VIRTUAL_HOST: 'autodeploy.*'
     SECRET: 'abc123'
     SLACK_HOOK:
-    SWARM_MODE:
-    PAGEDATA_HOST:
-    PAGEDATA_KEY:
     DOCKERHUB_AUTH:
 
