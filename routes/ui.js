@@ -14,7 +14,7 @@ exports.ui = {
     const secret = request.query.secret;
     const html = `
       <html>
-        <form action="/hook?secret${secret}" method="POST">
+        <form action="/?secret=${secret}" method="POST">
           <label>Name</label>
           <input type="text" name="name" value=""/>
           <label>Image</label>
