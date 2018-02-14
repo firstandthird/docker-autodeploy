@@ -65,7 +65,7 @@ exports.hook = {
           message += ` at ${payload.domain}`;
         }
         server.log(['deploy', 'success'], message);
-        done(null, 'ok');
+        done(null, { success: 'ok' });
       }
     }
   }
