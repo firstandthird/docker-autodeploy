@@ -1,13 +1,15 @@
 debug: '{{ENV.DEBUG}}'
 secret: '{{ENV.SECRET}}'
-deployScript: '{{CWD}}/deploy'
-envEndpoint: '{{ENV.ENV_ENDPOINT}}'
 slackHook: '{{ENV.SLACK_HOOK}}'
 dockerHubAuth: '{{ENV.DOCKERHUB_AUTH}}'
+configPath: '{{ENV.CONFIG_PATH}}'
 plugins:
-  hapi-auto-handler:
-    _priority: -4
+  hapi-method-loader:
+    _enabled: false
+  hapi-route-loader:
+    _dependencies: []
   hapi-logr:
+    unhandledRejection: true
     reporters:
       logr-slack:
         reporter: 'logr-slack'

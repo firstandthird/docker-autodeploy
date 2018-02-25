@@ -1,9 +1,9 @@
-'use strict';
 const Joi = require('joi');
 const Boom = require('boom');
-const Docker = require('dockerode');
-const aug = require('aug');
-const serviceUpdate = require('docker-service-update');
+const DockerServices = require('@firstandthird/docker-services');
+const parseDir = require('parse-dir');
+const varson = require('varson');
+
 exports.hook = {
   path: '/',
   method: 'POST',
@@ -11,63 +11,57 @@ exports.hook = {
     validate: {
       query: {
         secret: Joi.string()
-      },
-      payload: {
-        name: Joi.string(),
-        clone: Joi.string(),
-        image: Joi.string(),
-        environment: Joi.object(),
-        labels: Joi.object()
       }
     }
   },
-  handler: {
-    autoInject: {
-      secret(settings, request, done) {
-        const secret = settings.secret;
-        if (secret !== request.query.secret) {
-          return done(Boom.unauthorized());
-        }
-        done(null, secret);
-      },
-      docker(done) {
-        const docker = new Docker();
-        done(null, docker);
-      },
-      auth(server, done) {
-        const auth = server.methods.docker.authConfig();
-        done(null, auth);
-      },
-      payload(request, done) {
-        done(null, request.payload);
-      },
-      async update(auth, docker, payload) {
-        let specEnv = {};
-        if (payload.environment) {
-          specEnv = Object.assign({}, specEnv, payload.environment);
-        }
-        specEnv['UPDATED'] = new Date().getTime();
+  async handler(request, h) {
+    const server = request.server;
+    const payload = request.payload;
 
-        const res = await serviceUpdate({
-          docker,
-          auth,
-          serviceName: payload.name,
-          fromService: payload.clone,
-          image: payload.image,
-          labels: payload.labels,
-          environment: specEnv
-        })
-        return res;
-      },
-      reply(server, update, payload, done) {
-        let message = `Updating ${payload.name}`;
-        if (payload.domain) {
-          message += ` at ${payload.domain}`;
-        }
-        server.log(['deploy', 'success'], message);
-        done(null, { success: 'ok' });
-      }
+    if (!payload.name) {
+      throw Boom.badRequest('name is required');
     }
+
+    const settings = server.settings.app;
+    const secret = settings.secret;
+    if (secret && secret !== request.query.secret) {
+      throw Boom.unauthorized();
+    }
+
+    const parsed = await parseDir(`${settings.configPath}/*.yaml`);
+
+    const configs = {};
+    parsed.forEach(p => {
+      configs[p.basename] = p.contents;
+    });
+
+    const configKey = payload.config || payload.name;
+
+    const rawConfig = configs[configKey];
+
+    if (!rawConfig) {
+      throw Boom.notFound();
+    }
+
+    const spec = varson(rawConfig, payload);
+
+    if (settings.debug) {
+      server.log(['debug'], {
+        spec,
+        payload
+      });
+    }
+
+    const services = new DockerServices();
+
+    const exists = await services.exists(spec.Name);
+    if (exists) {
+      await services.update(spec);
+      server.log([spec.Name, 'update', 'success'], `${spec.Name} updated`);
+    } else {
+      await services.create(spec);
+      server.log([spec.Name, 'create', 'success'], `${spec.Name} created`);
+    }
+    return { status: 'ok' };
   }
 };
-

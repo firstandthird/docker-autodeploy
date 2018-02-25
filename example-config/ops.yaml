@@ -1,0 +1,7 @@
+Name: 'ops-{{branch}}'
+TaskTemplate:
+  ContainerSpec:
+    Image: 'firstandthird/ops:{{ver}}'
+    Labels:
+      test: '{{label}}'
+

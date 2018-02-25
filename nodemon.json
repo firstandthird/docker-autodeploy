@@ -9,11 +9,8 @@
   "watch": [
     "package.json",
     "routes/**/*.js",
-    "methods/**/*.js",
-    "plugins/**/*.js",
-    "helpers/**/*.js",
-    "views/**/*.njk",
-    "conf/*.yaml"
+    "rapptor.yaml",
+    "example-config/*.yaml"
   ],
   "ext": "js yaml njk"
 }

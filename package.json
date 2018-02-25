@@ -15,20 +15,18 @@
     "lint": "eslint . "
   },
   "dependencies": {
-    "aug": "^2.0.0",
-    "boom": "^5.1.0",
-    "docker-service-update": "^2.0.0",
-    "dockerode": "^2.4.3",
-    "hapi-auto-handler": "^1.4.1",
-    "joi": "^10.5.2",
+    "@firstandthird/docker-services": "^3.0.0",
+    "boom": "^7.1.1",
+    "joi": "^13.1.2",
     "logr-slack": "^1.1.0",
-    "rapptor": "^3.2.0",
-    "wreck": "^12.2.2"
+    "parse-dir": "^4.0.0",
+    "rapptor": "^5.4.1",
+    "varson": "^2.0.3"
   },
   "devDependencies": {
-    "eslint": "3.18.0",
-    "eslint-config-firstandthird": "3.3.0",
-    "eslint-plugin-import": "2.2.0",
+    "eslint": "^4.18.1",
+    "eslint-config-firstandthird": "^4.3.0",
+    "eslint-plugin-import": "^2.9.0",
     "nodemon": "^1.11.0"
   },
   "eslintConfig": {
