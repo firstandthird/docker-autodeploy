@@ -40,10 +40,27 @@ exports.hook = {
     const rawConfig = configs[configKey];
 
     if (!rawConfig) {
-      throw Boom.notFound();
+      throw Boom.notFound('config not found');
     }
 
-    const spec = varson(rawConfig, payload);
+    const context = Object.assign({
+      ENV: process.env,
+      get(key, fallback) {
+        return payload[key] || fallback;
+      }
+    }, payload);
+    const spec = varson(rawConfig, context);
+
+    const replaceGoTmpl = function(str) {
+      if (!str || str.indexOf('{!') === -1) {
+        return str;
+      }
+      return str.replace('{!', '{{').replace('!}', '}}');
+    };
+    spec.TaskTemplate.ContainerSpec.Hostname = replaceGoTmpl(spec.TaskTemplate.ContainerSpec.Hostname);
+    if (spec.TaskTemplate.ContainerSpec.Env) {
+      spec.TaskTemplate.ContainerSpec.Env = spec.TaskTemplate.ContainerSpec.Env.map(e => replaceGoTmpl(e));
+    }
 
     if (settings.debug) {
       server.log(['debug'], {

@@ -1,7 +1,11 @@
 Name: 'ops-{{branch}}'
 TaskTemplate:
   ContainerSpec:
-    Image: 'firstandthird/ops:{{ver}}'
+    Image: 'firstandthird/ops:{{get("ver", "latest")}}'
+    Hostname: '{!.Task.ID!}'
+    Env:
+      - 'nodeHost={!.Node.Hostname!}'
     Labels:
       test: '{{label}}'
+      nodeVersion: '{{ENV.NODE_VERSION}}'
 
