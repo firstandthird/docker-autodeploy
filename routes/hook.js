@@ -76,22 +76,10 @@ exports.hook = {
     const exists = await services.exists(spec.Name);
     let status = 'created';
     if (exists) {
-      services.adjust(spec.Name, { force: true }).then(() => {
-        server.log([spec.Name, 'update', 'success'], {
-          message: `${spec.Name} updated`,
-          url,
-          payload
-        });
-      });
+      server.methods.updateService(services, spec.Name, url, payload);
       status = 'updated';
     } else {
-      services.create(spec).then(() => {
-        server.log([spec.Name, 'create', 'success'], {
-          message: `${spec.Name} created`,
-          url,
-          payload
-        });
-      });
+      server.methods.createService(services, spec, url, payload);
     }
     return { status };
   }
