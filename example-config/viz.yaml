@@ -1,0 +1,22 @@
+Name: viz
+TaskTemplate:
+  ContainerSpec:
+    Image: 'dockersamples/visualizer'
+    Mounts:
+      - Type: 'bind'
+        Target: '/var/run/docker.sock'
+        Source: '/var/run/docker.sock'
+  Placement:
+    Constraints:
+      - "node.role == manager"
+  Resources:
+    Limits:
+      MemoryBytes: 524288000
+Networks:
+  - Target: 'traefik-net'
+Labels:
+  traefik.docker.network: 'traefik-net'
+  traefik.port: '8080'
+EndpointSpec:
+  Ports:
+    - TargetPort: 8080

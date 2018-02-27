@@ -1,0 +1,35 @@
+_url: 'http://{{domain}}'
+Name: traefik
+TaskTemplate:
+  ContainerSpec:
+    Image: 'traefik:v1.5.2-alpine'
+    Args:
+      - '--docker'
+      - '--docker.swarmmode'
+      - '--docker.domain={{domain}}'
+      - '--docker.watch'
+      - '--accessLog'
+      - '--web'
+      - '--web.readonly'
+      - "--entryPoints=Name:http Address::80"
+      - "--defaultEntryPoints=http"
+      - "--logLevel=INFO"
+      - "--accessLog"
+      - "--retry.attempts=2"
+    Mounts:
+      - Type: 'bind'
+        Target: '/var/run/docker.sock'
+        Source: '/var/run/docker.sock'
+  Placement:
+    Constraints:
+      - "node.role == manager"
+Networks:
+  - Target: 'traefik-net'
+EndpointSpec:
+  Ports:
+    - TargetPort: 80
+      PublishedPort: 80
+    - TargetPort: 8080
+      PublishedPort: 8080
+    - TargetPort: 443
+      PublishedPort: 443

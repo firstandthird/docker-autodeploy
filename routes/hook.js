@@ -1,7 +1,6 @@
 const Joi = require('joi');
 const Boom = require('boom');
 const DockerServices = require('@firstandthird/docker-services');
-const parseDir = require('parse-dir');
 const varson = require('varson');
 
 exports.hook = {
@@ -28,12 +27,7 @@ exports.hook = {
       throw Boom.unauthorized();
     }
 
-    const parsed = await parseDir(`${settings.configPath}/*.yaml`);
-
-    const configs = {};
-    parsed.forEach(p => {
-      configs[p.basename] = p.contents;
-    });
+    const configs = await server.methods.getConfig();
 
     const configKey = payload.config || payload.name;
 
@@ -49,7 +43,13 @@ exports.hook = {
         return payload[key] || fallback;
       }
     }, payload);
-    const spec = varson(rawConfig, context);
+    let spec = null;
+    try {
+      spec = varson(rawConfig, context);
+    } catch (e) {
+      throw Boom.badRequest(e);
+    }
+
 
     const replaceGoTmpl = function(str) {
       if (!str || str.indexOf('{!') === -1) {
@@ -70,15 +70,29 @@ exports.hook = {
     }
 
     const services = new DockerServices();
+    const url = spec._url;
+    delete spec._url;
 
     const exists = await services.exists(spec.Name);
+    let status = 'created';
     if (exists) {
-      await services.update(spec);
-      server.log([spec.Name, 'update', 'success'], `${spec.Name} updated`);
+      services.adjust(spec.Name, { force: true }).then(() => {
+        server.log([spec.Name, 'update', 'success'], {
+          message: `${spec.Name} updated`,
+          url,
+          payload
+        });
+      });
+      status = 'updated';
     } else {
-      await services.create(spec);
-      server.log([spec.Name, 'create', 'success'], `${spec.Name} created`);
+      services.create(spec).then(() => {
+        server.log([spec.Name, 'create', 'success'], {
+          message: `${spec.Name} created`,
+          url,
+          payload
+        });
+      });
     }
-    return { status: 'ok' };
+    return { status };
   }
 };

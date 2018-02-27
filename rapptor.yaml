@@ -4,13 +4,13 @@ slackHook: '{{ENV.SLACK_HOOK}}'
 dockerHubAuth: '{{ENV.DOCKERHUB_AUTH}}'
 configPath: '{{ENV.CONFIG_PATH}}'
 plugins:
-  hapi-method-loader:
-    _enabled: false
-  hapi-route-loader:
-    _dependencies: []
   hapi-logr:
     unhandledRejection: true
     reporters:
+      flat:
+        reporter: 'logr-flat'
+        options:
+          flatDepth: 3
       logr-slack:
         reporter: 'logr-slack'
         enabled: '{{(slackHook)}}'
@@ -21,4 +21,4 @@ plugins:
             - 'error'
           slackHook: '{{slackHook}}'
           username: '{{ENV.SLACK_NAME || "AutoDeploy" }}'
-          icon_emoji: ':wrench:'
+          iconEmoji: ':rocket:'

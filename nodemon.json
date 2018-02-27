@@ -9,6 +9,7 @@
   "watch": [
     "package.json",
     "routes/**/*.js",
+    "methods/**/*.js",
     "rapptor.yaml",
     "example-config/*.yaml"
   ],

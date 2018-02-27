@@ -5,11 +5,13 @@ app:
     - "/var/run/docker.sock:/var/run/docker.sock"
     #- "$HOME/.docker:/home/app/.docker"
   ports:
-    - '8080:8080'
+    - '8081:8080'
   environment:
     DEBUG: 1
     CONFIG_PATH: '/home/app/src/example-config'
     SECRET:
     SLACK_HOOK:
+    SLACK_NAME:
     DOCKERHUB_AUTH:
+
 
