@@ -76,7 +76,7 @@ exports.hook = {
     const exists = await services.exists(spec.Name);
     let status = 'created';
     if (exists) {
-      server.methods.updateService(services, spec.Name, url, payload);
+      server.methods.updateService(services, spec, url, payload);
       status = 'updated';
     } else {
       server.methods.createService(services, spec, url, payload);

@@ -1,18 +1,21 @@
-module.exports = async function(services, name, url, payload) {
+module.exports = async function(services, spec, url, payload) {
   const server = this;
+
+  const newSpec = services.adjustSpec(spec, {
+    image: spec.TaskTemplate.ContainerSpec.Image,
+    force: true,
+    env: {
+      UPDATED: new Date().getTime()
+    }
+  });
   try {
-    await services.adjust(name, {
-      force: true,
-      env: {
-        UPDATED: new Date().getTime()
-      }
-    });
-    server.log([name, 'update', 'success'], {
-      message: `${name} updated`,
+    await services.update(newSpec);
+    server.log([newSpec.Name, 'update', 'success'], {
+      message: `${newSpec.Name} updated`,
       url,
       payload
     });
   } catch (e) {
-    server.log([name, 'update', 'error'], e);
+    server.log([newSpec.Name, 'update', 'error'], e);
   }
 };

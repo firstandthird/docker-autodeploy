@@ -12,7 +12,7 @@ exports.hook = {
       }
     }
   },
-  handler(request, h) {
+  async handler(request, h) {
     const server = request.server;
     const payload = request.payload;
 
@@ -27,7 +27,12 @@ exports.hook = {
     }
 
     const services = new DockerServices();
-    server.methods.updateService(services, payload.name, null, payload);
+    await services.adjust(payload.name, {
+      force: true,
+      env: {
+        UPDATED: new Date().getTime()
+      }
+    });
 
     return { status: 'redeploying' };
   }
