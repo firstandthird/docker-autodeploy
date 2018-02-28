@@ -26,14 +26,25 @@ exports.hook = {
       throw Boom.unauthorized();
     }
 
-    const services = new DockerServices();
-    await services.adjust(payload.name, {
-      force: true,
-      env: {
-        UPDATED: new Date().getTime()
-      }
-    });
+    const update = async function(name, debug) {
+      const services = new DockerServices();
+      const { spec } = await services.adjust(name, {
+        force: true,
+        env: {
+          UPDATED: new Date().getTime()
+        }
+      });
 
+      const log = {
+        message: `${name} redeployed`,
+      };
+      if (debug) {
+        log.spec = spec;
+      }
+      server.log([name, 'update', 'success'], log);
+    };
+
+    update(payload.name, settings.debug);
     return { status: 'redeploying' };
   }
 };

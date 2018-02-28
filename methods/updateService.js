@@ -1,4 +1,4 @@
-module.exports = async function(services, spec, url, payload) {
+module.exports = async function(services, spec, url, payload, debug) {
   const server = this;
 
   const newSpec = services.adjustSpec(spec, {
@@ -9,12 +9,16 @@ module.exports = async function(services, spec, url, payload) {
     }
   });
   try {
-    await services.update(newSpec);
-    server.log([newSpec.Name, 'update', 'success'], {
+    const results = await services.update(newSpec);
+    const log = {
       message: `${newSpec.Name} updated`,
       url,
       payload
-    });
+    };
+    if (debug) {
+      log.spec = results.spec;
+    }
+    server.log([newSpec.Name, 'update', 'success'], log);
   } catch (e) {
     server.log([newSpec.Name, 'update', 'error'], e);
   }

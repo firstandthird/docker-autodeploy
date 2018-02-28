@@ -62,13 +62,6 @@ exports.hook = {
       spec.TaskTemplate.ContainerSpec.Env = spec.TaskTemplate.ContainerSpec.Env.map(e => replaceGoTmpl(e));
     }
 
-    if (settings.debug) {
-      server.log(['debug'], {
-        spec,
-        payload
-      });
-    }
-
     const services = new DockerServices();
     const url = spec._url;
     delete spec._url;
@@ -76,10 +69,10 @@ exports.hook = {
     const exists = await services.exists(spec.Name);
     let status = 'created';
     if (exists) {
-      server.methods.updateService(services, spec, url, payload);
+      server.methods.updateService(services, spec, url, payload, settings.debug);
       status = 'updated';
     } else {
-      server.methods.createService(services, spec, url, payload);
+      server.methods.createService(services, spec, url, payload, settings.debug);
     }
     return { status };
   }
