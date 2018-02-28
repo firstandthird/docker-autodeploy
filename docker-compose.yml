@@ -9,6 +9,7 @@ app:
   environment:
     DEBUG: 1
     CONFIG_PATH: '/home/app/src/example-config'
+    DOMAIN:
     SECRET:
     SLACK_HOOK:
     SLACK_NAME:

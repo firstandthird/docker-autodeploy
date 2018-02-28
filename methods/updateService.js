@@ -20,6 +20,9 @@ module.exports = async function(services, spec, url, payload, debug) {
     }
     server.log([newSpec.Name, 'update', 'success'], log);
   } catch (e) {
-    server.log([newSpec.Name, 'update', 'error'], e);
+    server.log([newSpec.Name, 'update', 'error'], {
+      message: `Error updating ${newSpec.Name}`,
+      error: e
+    });
   }
 };
