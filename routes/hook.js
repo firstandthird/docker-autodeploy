@@ -63,6 +63,7 @@ exports.hook = {
     }
 
     const services = new DockerServices();
+    services.maxWaitTimes = 40;
     const url = spec._url;
     delete spec._url;
 

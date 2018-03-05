@@ -16,6 +16,5 @@ module.exports = async function(services, spec, url, payload, debug) {
       message: `Error creating ${spec.Name}`,
       error: e.stack || e.message || e
     });
-    await services.remove(spec.Name);
   }
 };
