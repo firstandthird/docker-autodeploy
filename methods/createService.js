@@ -14,7 +14,7 @@ module.exports = async function(services, spec, url, payload, debug) {
   } catch (e) {
     server.log([spec.Name, 'create', 'error'], {
       message: `Error creating ${spec.Name}`,
-      error: e
+      error: e.stack || e.message || e
     });
     await services.remove(spec.Name);
   }

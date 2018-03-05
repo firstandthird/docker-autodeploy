@@ -22,7 +22,7 @@ module.exports = async function(services, spec, url, payload, debug) {
   } catch (e) {
     server.log([newSpec.Name, 'update', 'error'], {
       message: `Error updating ${newSpec.Name}`,
-      error: e
+      error: e.stack || e.message || e
     });
   }
 };
