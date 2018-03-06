@@ -15,8 +15,9 @@
     "lint": "eslint . "
   },
   "dependencies": {
-    "@firstandthird/docker-services": "^3.4.0",
+    "@firstandthird/docker-services": "^3.4.1",
     "boom": "^7.1.1",
+    "hapi-favicon": "^2.0.0",
     "joi": "^13.1.2",
     "logr-slack": "^1.1.0",
     "parse-dir": "^4.0.0",

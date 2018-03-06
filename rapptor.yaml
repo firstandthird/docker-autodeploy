@@ -22,3 +22,4 @@ plugins:
           slackHook: '{{slackHook}}'
           username: '{{ENV.SLACK_NAME || "AutoDeploy" }}'
           iconEmoji: ':rocket:'
+  hapi-favicon:
