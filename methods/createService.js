@@ -16,5 +16,12 @@ module.exports = async function(services, spec, url, payload, debug) {
       message: `Error creating ${spec.Name}`,
       error: e.stack || e.message || e
     });
+
+    try {
+      await services.remove(spec.Name);
+      server.log([spec.Name, 'remove'], `Removed ${spec.Name} service`);
+    } catch (e2) {
+      //eslint-disable-line no-empty
+    }
   }
 };
