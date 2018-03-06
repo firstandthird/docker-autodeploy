@@ -21,7 +21,7 @@
     "joi": "^13.1.2",
     "logr-slack": "^1.1.0",
     "parse-dir": "^4.0.0",
-    "rapptor": "^5.4.1",
+    "rapptor": "^5.7.1",
     "varson": "^2.0.3"
   },
   "devDependencies": {
