@@ -2,6 +2,7 @@ const Joi = require('joi');
 const Boom = require('boom');
 const DockerServices = require('@firstandthird/docker-services');
 const varson = require('varson');
+const compose2api = require('docker-compose-to-api');
 
 exports.hook = {
   path: '/',
@@ -37,6 +38,10 @@ exports.hook = {
       throw Boom.notFound('config not found');
     }
 
+    if (!rawConfig._type) {
+      server.log([configKey, 'config', 'warning'], 'Configs will default to compose in the next verison');
+    }
+
     const context = Object.assign({
       ENV: process.env,
       get(key, fallback) {
@@ -50,6 +55,13 @@ exports.hook = {
       throw Boom.badRequest(e);
     }
 
+    if (spec._type === 'compose') {
+      try {
+        spec = compose2api(rawConfig[configKey]);
+      } catch (e) {
+        throw Boom.badRequest(e);
+      }
+    }
 
     const replaceGoTmpl = function(str) {
       if (!str || str.indexOf('{!') === -1) {
@@ -63,8 +75,6 @@ exports.hook = {
     }
 
     const services = new DockerServices();
-    const url = spec._url;
-    delete spec._url;
 
     const exists = await services.exists(spec.Name);
     let status = 'created';
