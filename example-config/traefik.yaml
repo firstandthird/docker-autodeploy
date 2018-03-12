@@ -3,8 +3,8 @@ _type: 'compose'
 traefik:
   image: 'traefik:v1.5.2-alpine'
   command:
-    - '--docker.domain=${DOMAIN}'
-    - '--loglevel=${TRAEFIK_LOG}'
+    - '--docker.domain={{domain}}'
+    - '--loglevel=WARN'
     - '--docker'
     - '--docker.swarmmode'
     - '--docker.domain=firstandthird.com'
