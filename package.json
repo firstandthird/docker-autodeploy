@@ -17,7 +17,7 @@
   "dependencies": {
     "@firstandthird/docker-services": "^3.4.1",
     "boom": "^7.1.1",
-    "docker-compose-to-api": "^1.0.0",
+    "docker-compose-to-api": "^1.0.4",
     "hapi-favicon": "^2.0.0",
     "joi": "^13.1.2",
     "logr-slack": "^1.1.0",

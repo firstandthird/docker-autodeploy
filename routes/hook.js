@@ -55,9 +55,13 @@ exports.hook = {
       throw Boom.badRequest(e);
     }
 
+    const url = spec._url;
+    delete spec._url;
+
     if (spec._type === 'compose') {
+      delete spec._type;
       try {
-        spec = compose2api(rawConfig[configKey]);
+        spec = compose2api(spec);
       } catch (e) {
         throw Boom.badRequest(e);
       }
