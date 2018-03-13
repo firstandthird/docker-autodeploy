@@ -10,7 +10,7 @@ plugins:
       flat:
         reporter: 'logr-flat'
         options:
-          flatDepth: 3
+          flatDepth: 1
       logr-slack:
         reporter: 'logr-slack'
         enabled: '{{(slackHook)}}'
