@@ -87,6 +87,7 @@ exports.hook = {
 
     if (settings.debug) {
       server.log([spec.Name, 'debug'], {
+        rawConfig,
         spec,
         payload,
         inherit,
