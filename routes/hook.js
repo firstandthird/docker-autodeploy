@@ -85,6 +85,15 @@ exports.hook = {
       spec.TaskTemplate.ContainerSpec.Env = spec.TaskTemplate.ContainerSpec.Env.map(e => replaceGoTmpl(e));
     }
 
+    if (settings.debug) {
+      server.log([spec.Name, 'debug'], {
+        spec,
+        payload,
+        inherit,
+        url
+      });
+    }
+
     const services = new DockerServices();
 
     const exists = await services.exists(spec.Name);
