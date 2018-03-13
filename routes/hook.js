@@ -3,6 +3,7 @@ const Boom = require('boom');
 const DockerServices = require('@firstandthird/docker-services');
 const varson = require('varson');
 const compose2api = require('docker-compose-to-api');
+const aug = require('aug');
 
 exports.hook = {
   path: '/',
@@ -40,6 +41,12 @@ exports.hook = {
 
     if (!rawConfig._type) {
       server.log([configKey, 'config', 'warning'], 'Configs will default to compose in the next verison');
+    }
+
+    const inherit = rawConfig._inherit;
+    if (inherit) {
+      rawConfig[configKey] = aug(configs[inherit], rawConfig[configKey]);
+      delete rawConfig._inherit;
     }
 
     const context = Object.assign({

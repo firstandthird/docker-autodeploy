@@ -1,4 +1,5 @@
 _url: 'http://{{domain}}'
+_inherit: 'base'
 _type: 'compose'
 traefik:
   image: 'traefik:v1.5.2-alpine'
@@ -21,8 +22,6 @@ traefik:
     - '--acme.ondemand=true'
   volumes:
     - '/var/run/docker.sock:/var/run/docker.sock'
-  networks:
-    - traefik-net
   ports:
     - '80:80'
     - '8080:8080'
