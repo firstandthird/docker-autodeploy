@@ -17,6 +17,7 @@ plugins:
         options:
           hideTags: true
           filter:
+            - 'start'
             - 'success'
             - 'error'
           slackHook: '{{slackHook}}'
