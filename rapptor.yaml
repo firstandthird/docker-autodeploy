@@ -1,6 +1,6 @@
 debug: '{{getEnv("DEBUG", 0)}}'
 secret: '{{getEnv("SECRET")}}'
-slackHook: '{{getEnv("SLACK_HOOK", "")}}'
+slackHook: '{{getEnv("SLACK_HOOK", false)}}'
 dockerHubAuth: '{{getEnv("DOCKERHUB_AUTH", "")}}'
 configPath: '{{getEnv("CONFIG_PATH")}}'
 monitorFor: '{{getEnv("MONITOR_FOR", 30000)}}'
@@ -14,8 +14,8 @@ plugins:
           flatDepth: 1
       logr-slack:
         reporter: 'logr-slack'
-        enabled: '{{(slackHook)}}'
         options:
+          enabled: '{{(slackHook)}}'
           hideTags: true
           filter:
             - 'start'
