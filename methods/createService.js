@@ -1,3 +1,7 @@
+const util = require('util');
+
+const wait = util.promisify(setTimeout);
+
 module.exports = async function(services, spec, url, payload, debug) {
   const server = this;
   try {
@@ -18,8 +22,9 @@ module.exports = async function(services, spec, url, payload, debug) {
     });
 
     try {
+      server.log([spec.Name, 'remove'], `Removing ${spec.Name} service`);
+      await wait(10000);
       await services.remove(spec.Name);
-      server.log([spec.Name, 'remove'], `Removed ${spec.Name} service`);
     } catch (e2) {
       //eslint-disable-line no-empty
     }

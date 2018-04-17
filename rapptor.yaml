@@ -1,8 +1,9 @@
-debug: '{{ENV.DEBUG}}'
-secret: '{{ENV.SECRET}}'
-slackHook: '{{ENV.SLACK_HOOK}}'
-dockerHubAuth: '{{ENV.DOCKERHUB_AUTH}}'
-configPath: '{{ENV.CONFIG_PATH}}'
+debug: '{{getEnv("DEBUG", 0)}}'
+secret: '{{getEnv("SECRET")}}'
+slackHook: '{{getEnv("SLACK_HOOK", false)}}'
+dockerHubAuth: '{{getEnv("DOCKERHUB_AUTH", "")}}'
+configPath: '{{getEnv("CONFIG_PATH")}}'
+monitorFor: '{{getEnv("MONITOR_FOR", 30000)}}'
 plugins:
   hapi-logr:
     unhandledRejection: true
@@ -13,14 +14,14 @@ plugins:
           flatDepth: 1
       logr-slack:
         reporter: 'logr-slack'
-        enabled: '{{(slackHook)}}'
         options:
+          enabled: '{{(slackHook)}}'
           hideTags: true
           filter:
             - 'start'
             - 'success'
             - 'error'
           slackHook: '{{slackHook}}'
-          username: '{{ENV.SLACK_NAME || "AutoDeploy" }}'
+          username: '{{getEnv("SLACK_NAME" ,"AutoDeploy")}}'
           iconEmoji: ':rocket:'
   hapi-favicon:

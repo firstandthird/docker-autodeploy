@@ -95,7 +95,9 @@ exports.hook = {
       });
     }
 
-    const services = new DockerServices();
+    const services = new DockerServices({
+      monitorfor: settings.monitorFor
+    });
 
     const exists = await services.exists(spec.Name);
     let status = 'created';

@@ -1,0 +1,12 @@
+_type: 'compose'
+chaos:
+  image: 'ecwillis/chaos'
+  environment:
+    CHAOS: 'true'
+  deploy:
+    labels:
+      isChaos: 'true'
+    resources:
+      limits:
+        cpus: 0.70
+        memory: 512M
