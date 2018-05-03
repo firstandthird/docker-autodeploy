@@ -1,4 +1,5 @@
 debug: '{{getEnv("DEBUG", 0)}}'
+verboseDebug: '{{getEnv("VERBOSE_DEBUG", 0)}}'
 secret: '{{getEnv("SECRET")}}'
 slackHook: '{{getEnv("SLACK_HOOK", false)}}'
 dockerHubAuth: '{{getEnv("DOCKERHUB_AUTH", "")}}'

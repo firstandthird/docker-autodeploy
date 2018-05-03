@@ -94,10 +94,15 @@ exports.hook = {
         url
       });
     }
-
-    const services = new DockerServices({
-      monitorfor: settings.monitorFor
-    });
+    const servicesOpts = {
+      monitorFor: settings.monitorFor
+    };
+    if (settings.verboseDebug) {
+      servicesOpts.listener = (tag, data) => {
+        server.log(tag, data);
+      };
+    }
+    const services = new DockerServices(servicesOpts);
 
     const exists = await services.exists(spec.Name);
     let status = 'created';
