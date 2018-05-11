@@ -5,6 +5,7 @@ slackHook: '{{getEnv("SLACK_HOOK", false)}}'
 dockerHubAuth: '{{getEnv("DOCKERHUB_AUTH", "")}}'
 configPath: '{{getEnv("CONFIG_PATH")}}'
 monitorFor: '{{getEnv("MONITOR_FOR", 30000)}}'
+waitDelay: '{{getEnv("WAIT_DELAY", 2000)}}'
 plugins:
   hapi-logr:
     unhandledRejection: true

@@ -95,7 +95,8 @@ exports.hook = {
       });
     }
     const servicesOpts = {
-      monitorFor: settings.monitorFor
+      monitorFor: settings.monitorFor,
+      waitDelay: settings.waitDelay
     };
     if (settings.verboseDebug) {
       servicesOpts.listener = (tag, data) => {
