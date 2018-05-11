@@ -4,8 +4,9 @@ const wait = util.promisify(setTimeout);
 
 module.exports = async function(services, spec, url, payload, debug) {
   const server = this;
+  const detach = server.settings.app.enableMonitor === 'false';
   try {
-    await services.create(spec);
+    await services.create(spec, detach);
     const log = {
       message: `${spec.Name} created`,
       url,

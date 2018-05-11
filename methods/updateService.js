@@ -1,13 +1,13 @@
 module.exports = async function(services, spec, url, payload, debug) {
   const server = this;
-
+  const detach = server.settings.app.enableMonitor === 'false';
   const newSpec = services.adjustSpec(spec, {
     image: spec.TaskTemplate.ContainerSpec.Image,
     force: true,
     env: {
       UPDATED: new Date().getTime()
     }
-  });
+  }, detach);
   try {
     const results = await services.update(newSpec);
     const log = {

@@ -13,6 +13,7 @@ app:
     DOMAIN:
     SECRET:
     MONITOR_FOR:
+    ENABLE_MONITOR:
     # SLACK_HOOK:
     #  SLACK_NAME:
     DOCKERHUB_AUTH:
