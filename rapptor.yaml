@@ -10,6 +10,7 @@ waitDelay: '{{getEnv("WAIT_DELAY", 2000)}}'
 plugins:
   hapi-pqueue:
     concurrency: '{{getEnv("QUEUE_CONCUR", 1)}}'
+    key: '{{ secret }}'
   hapi-logr:
     unhandledRejection: true
     reporters:
