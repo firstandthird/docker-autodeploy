@@ -108,10 +108,14 @@ exports.hook = {
     const exists = await services.exists(spec.Name);
     let status = 'created';
     if (exists) {
-      server.methods.updateService(services, spec, url, payload, settings.debug);
+      server.queue.add(() => server.methods.updateService(services, spec, url, payload, settings.debug)).then(() => {
+        server.log(['autodeploy', 'queue', 'updated'], `${spec.Name} updated`);
+      });
       status = 'updated';
     } else {
-      server.methods.createService(services, spec, url, payload, settings.debug);
+      server.queue.add(() => server.methods.createService(services, spec, url, payload, settings.debug)).then(() => {
+        server.log(['autodeploy', 'queue', 'created'], `${spec.Name} updated`);
+      });
     }
     return { status };
   }

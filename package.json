@@ -20,6 +20,7 @@
     "boom": "^7.1.1",
     "docker-compose-to-api": "^1.0.8",
     "hapi-favicon": "^2.0.0",
+    "hapi-pqueue": "^0.0.1",
     "joi": "^13.1.2",
     "logr-slack": "^1.1.0",
     "parse-dir": "^4.0.0",
