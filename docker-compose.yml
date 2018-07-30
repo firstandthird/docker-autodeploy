@@ -3,7 +3,7 @@ app:
   volumes:
     - ".:/home/app/src"
     - "/var/run/docker.sock:/var/run/docker.sock"
-    #- "$HOME/.docker:/home/app/.docker"
+    - "$HOME/.docker:/home/app/.docker"
   ports:
     - '8079:8080'
   environment:
