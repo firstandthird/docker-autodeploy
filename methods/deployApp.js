@@ -1,22 +1,18 @@
 const runshell = require('runshell');
 
 module.exports = async function(services, name, data) {
-  const setStr = [];
-
+  let set = [];
   if (data) {
-    Object.keys(data).forEach(k => {
-      setStr.push(`--set ${k}=${data[k]}`);
-    });
+    set = data;
   }
-  let results = '';
-  try {
-    await services.dockerClient.pull(name);
-    const resultObj = await runshell(`docker pull ${name} && /home/app/docker-app-linux deploy ${name} ${setStr.join(' ')}`, { log: true, verbose: true });
+  await services.pull(name);
+  const resultObj = await runshell(`/home/app/docker-app-linux deploy ${name}`, {
+    log: true,
+    verbose: true,
+    args: {
+      set
+    }
+  });
 
-    ({ results } = resultObj);
-  } catch (e) {
-    throw e;
-  }
-
-  return { sucess: 1, results };
+  return { sucess: 1, results: resultObj.results };
 };

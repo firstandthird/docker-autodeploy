@@ -19,6 +19,8 @@ exports.appDeploy = {
     if (!payload.name) {
       throw Boom.badRequest('name is required');
     }
+    const appData = Object.apply({}, payload);
+    delete appData.name;
 
     const settings = request.server.settings.app;
 
@@ -33,8 +35,11 @@ exports.appDeploy = {
     }
     const services = new DockerServices(servicesOpts);
 
-    await server.methods.deployApp(services, payload.name, payload);
-
+    try {
+      await server.methods.deployApp(services, payload.name, appData);
+    } catch (e) {
+      throw Boom.boomify(e, { statusCode: 400 });
+    }
     return { success: true };
   }
 };
