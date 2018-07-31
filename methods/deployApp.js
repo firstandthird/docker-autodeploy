@@ -5,8 +5,7 @@ module.exports = async function(services, name, data) {
   if (data) {
     set = data;
   }
-  await services.pull(name);
-  const resultObj = await runshell(`/home/app/docker-app-linux deploy ${name}`, {
+  const resultObj = await runshell(`docker pull ${name} && /home/app/docker-app-linux deploy ${name}`, {
     log: true,
     verbose: true,
     args: {
