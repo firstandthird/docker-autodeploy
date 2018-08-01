@@ -1,7 +1,10 @@
 const runshell = require('runshell');
 
-module.exports = async function(name, data) {
+module.exports = async function(services, name, data) {
   this.log(['docker-app', 'deploy'], { name, data });
+
+  services.pull(name);
+
   const resultObj = await runshell(`docker pull ${name} && /home/app/docker-app-linux deploy ${name}`, {
     log: true,
     verbose: true,
