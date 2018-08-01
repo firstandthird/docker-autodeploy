@@ -8,5 +8,7 @@ module.exports = async function(name, data) {
     args: data || {}
   });
 
+  this.log([name, 'docker-app', 'deploy', 'success'], { name, data });
+
   return { sucess: 1, results: resultObj.results };
 };
