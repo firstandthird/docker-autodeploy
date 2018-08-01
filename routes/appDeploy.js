@@ -15,6 +15,12 @@ exports.appDeploy = {
     const server = request.server;
     const payload = request.payload;
 
+    const settings = server.settings.app;
+    const secret = settings.secret;
+    if (secret && secret !== request.query.secret) {
+      throw Boom.unauthorized();
+    }
+
     if (!payload.name) {
       throw Boom.badRequest('name is required');
     }
