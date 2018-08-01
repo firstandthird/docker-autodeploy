@@ -15,7 +15,7 @@
     "lint": "eslint . "
   },
   "dependencies": {
-    "@firstandthird/docker-services": "^4.3.0",
+    "@firstandthird/docker-services": "^4.4.0",
     "aug": "^2.0.0",
     "boom": "^7.1.1",
     "docker-compose-to-api": "^1.0.8",
@@ -25,6 +25,7 @@
     "logr-slack": "^1.1.0",
     "parse-dir": "^4.0.0",
     "rapptor": "^5.10.0",
+    "runshell": "^1.0.1",
     "varson": "^2.0.3"
   },
   "devDependencies": {

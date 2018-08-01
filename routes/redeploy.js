@@ -12,7 +12,7 @@ exports.hook = {
       }
     }
   },
-  async handler(request, h) {
+  handler(request, h) {
     const server = request.server;
     const payload = request.payload;
 
