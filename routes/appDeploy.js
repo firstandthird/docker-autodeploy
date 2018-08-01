@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const Boom = require('boom');
+const DockerServices = require('@firstandthird/docker-services');
 
 exports.appDeploy = {
   path: '/docker-app',
@@ -28,8 +29,15 @@ exports.appDeploy = {
     const appData = Object.assign({}, payload);
     delete appData.name;
 
+    const servicesOpts = {};
+    if (settings.versboseDebug) {
+      servicesOpts.listener = (tag, data) => {
+        server.log(tag, data);
+      };
+    }
+    const services = new DockerServices(servicesOpts);
     try {
-      await server.methods.deployApp(payload.name, appData);
+      await server.methods.deployApp(services, payload.name, appData);
     } catch (e) {
       throw Boom.boomify(e, { statusCode: 400 });
     }
