@@ -1,5 +1,6 @@
 #! /bin/sh
 
-curl -o /home/app/docker-app-linux.tar.gz --location https://github.com/docker/app/releases/download/v0.3.0/docker-app-linux.tar.gz
-tar -xvf /home/app/docker-app-linux.tar.gz -C /home/app
+curl -o /home/app/docker-app.tar.gz --location https://github.com/ecwillis/app/releases/download/v0.3.1-pre/docker-app.tar.gz
+tar -xvf /home/app/docker-app.tar.gz -C /home/app
+mv /home/app/docker-app /home/app/docker-app-linux
 echo "DONE!"
