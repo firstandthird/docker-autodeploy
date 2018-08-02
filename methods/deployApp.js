@@ -5,10 +5,23 @@ module.exports = async function(services, name, data) {
 
   services.pull(name);
 
+  const deployData = {
+    f: data.f || null,
+    set: data.set || {},
+    d: data.d || null,
+    name: data.name || null
+  };
+
+  Object.keys(deployData).forEach(k => {
+    if (deployData[k] === null) {
+      delete deployData[k];
+    }
+  });
+
   const resultObj = await runshell(`/home/app/docker-app-linux deploy ${name}`, {
     log: true,
     verbose: true,
-    args: data || {}
+    args: deployData
   });
 
   this.log([name, 'docker-app', 'deploy', 'success'], { name, data });
