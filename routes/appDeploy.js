@@ -22,12 +22,19 @@ exports.appDeploy = {
       throw Boom.unauthorized();
     }
 
-    if (!payload.name) {
-      throw Boom.badRequest('name is required');
+    if (!payload.name || !payload.stackName) {
+      throw Boom.badRequest('name and stackName are required');
     }
 
     const appData = Object.assign({}, payload);
     delete appData.name;
+    appData.d = appData.stackName;
+    if (!appData.set) {
+      appData.set = {};
+    }
+
+    appData.set.stackName = appData.stackName;
+    delete appData.stackName;
 
     const servicesOpts = {};
     if (settings.versboseDebug) {
