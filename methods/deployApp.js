@@ -8,7 +8,8 @@ module.exports = async function(services, image, data) {
   const deployData = {
     'settings-files': data.settingsFile || null,
     set: data.set || {},
-    name: data.name || null
+    name: data.name || null,
+    'with-registry-auth': true
   };
 
   Object.keys(deployData).forEach(k => {
