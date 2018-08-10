@@ -3,7 +3,7 @@ const runshell = require('runshell');
 module.exports = async function(services, image, data) {
   this.log(['docker-app', 'deploy'], { image, data });
 
-  services.pull(image);
+  await services.pull(image);
 
   const deployData = {
     'settings-files': data.settingsFile || null,
