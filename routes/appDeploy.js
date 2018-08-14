@@ -46,7 +46,11 @@ exports.appDeploy = {
     try {
       await server.methods.deployApp(services, payload.image, appData);
     } catch (e) {
-      throw Boom.boomify(e, { statusCode: 400 });
+      let er = e;
+      if (e.msg) {
+        er = new Error(e.msg);
+      }
+      throw Boom.boomify(er, { statusCode: 400 });
     }
     return { success: true };
   }
