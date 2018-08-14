@@ -8,6 +8,7 @@ enableMonitor: '{{getEnv("ENABLE_MONITOR", true)}}'
 monitorFor: '{{getEnv("MONITOR_FOR", 30000)}}'
 waitDelay: '{{getEnv("WAIT_DELAY", 2000)}}'
 plugins:
+  './plugins/qs.js':
   hapi-pqueue:
     concurrency: '{{getEnv("QUEUE_CONCUR", 1)}}'
     key: '{{ secret }}'
