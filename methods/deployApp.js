@@ -3,9 +3,8 @@ const runshell = require('runshell');
 module.exports = async function(services, image, data) {
   this.log(['docker-app', 'deploy'], { image, data });
 
-  await services.pull(image);
-
   const deployData = {
+    __: image,
     'settings-files': data.settingsFile || null,
     set: data.set || {},
     name: data.name || null,
@@ -18,7 +17,7 @@ module.exports = async function(services, image, data) {
     }
   });
 
-  const resultObj = await runshell(`/home/app/docker-app-linux deploy ${image}`, {
+  const resultObj = await runshell('/home/app/src/bin/deploy-docker-app', {
     log: true,
     verbose: true,
     args: deployData

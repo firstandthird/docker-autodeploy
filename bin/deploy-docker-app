@@ -1,0 +1,10 @@
+#! /bin/sh
+
+IMAGE=$1
+shift
+
+echo "Deploying $IMAGE with args $@"
+
+docker pull $IMAGE
+
+/home/app/docker-app-linux deploy $IMAGE $@
