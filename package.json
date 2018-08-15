@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://github.com/firstandthird/docker-autodeploy",
   "author": "First+Third",
-  "version": "6.15.0",
+  "version": "6.15.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/firstandthird/docker-autodeploy.git"
