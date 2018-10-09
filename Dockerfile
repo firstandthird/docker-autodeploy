@@ -6,3 +6,5 @@ RUN ./bin/install-docker-app
 
 ENV CONFIG_PATH /config
 ENV NODE_ENV production
+
+CMD ["rapptor"]
