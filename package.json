@@ -22,10 +22,9 @@
     "hapi-favicon": "^2.0.0",
     "hapi-pqueue": "^0.0.2",
     "joi": "^13.1.2",
-    "logr-slack": "^1.1.0",
     "parse-dir": "^4.0.0",
     "qs": "^6.5.2",
-    "rapptor": "^5.10.0",
+    "rapptor": "^7.1.0",
     "runshell": "^1.0.1",
     "varson": "^2.0.3"
   },
