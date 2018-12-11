@@ -22,12 +22,12 @@ exports.appDeploy = {
       throw Boom.unauthorized();
     }
 
-    if (!payload.image || !payload.stackName) {
-      throw Boom.badRequest('image and stackName are required');
+    if (!payload.dockerapp || !payload.stackName) {
+      throw Boom.badRequest('dockerapp (image name) and stackName are required');
     }
 
     const appData = Object.assign({}, payload);
-    delete appData.image;
+    delete appData.dockerapp;
     appData.name = appData.stackName;
     if (!appData.set) {
       appData.set = {};
@@ -44,7 +44,7 @@ exports.appDeploy = {
     }
     const services = new DockerServices(servicesOpts);
     try {
-      await server.methods.deployApp(services, payload.image, appData);
+      await server.methods.deployApp(services, payload.dockerapp, appData);
     } catch (e) {
       let er = e;
       if (e.msg) {
